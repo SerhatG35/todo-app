@@ -4,8 +4,8 @@ import { FaMoon, FaSun } from "react-icons/fa";
 const ColorModeButton = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
-  const fontColor = useColorModeValue("#D8ECFD", "#E9D6AF");
-  const hoverColor = useColorModeValue("#E9D6AF", "#D8ECFD");
+  const fontColor = useColorModeValue("#EBEBEB", "#E9D6AF");
+  const hoverColor = useColorModeValue("#E9D6AF", "#EBEBEB");
 
   return (
     <IconButton
