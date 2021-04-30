@@ -40,7 +40,7 @@ const HomeRight = () => {
         ml="10"
         mb="10"
       >
-        <Heading size="md" userSelect="none">
+        <Heading textAlign="center" size="md" userSelect="none">
           Add New Todo Card
         </Heading>
         <IconButton

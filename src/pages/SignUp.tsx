@@ -12,6 +12,7 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import axios from "axios";
+import { useState } from "react";
 
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -26,6 +27,7 @@ type SignUpFormInputs = {
 };
 
 const SignUp = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
   const toast = useToast();
   const {
@@ -36,115 +38,141 @@ const SignUp = () => {
     resolver: yupResolver(signUpSchema),
   });
 
-  const backgroundColor = useColorModeValue("#505153", "#E9D6AF");
-  const fontColor = useColorModeValue("#EBEBEB", "#E9D6AF");
-  const hoverColor = useColorModeValue("#E9D6AF", "#EBEBEB");
+  const backgroundColor = useColorModeValue("#505153", "#90CDF4");
+  const fontColor = useColorModeValue("#EBEBEB", "#90CDF4");
+  const hoverColor = useColorModeValue("#90CDF4", "#EBEBEB");
 
   const onSubmit = async (values: SignUpFormInputs) => {
-    console.log(values);
-    axios.post(" http://localhost:4000/user", {
-      firstname: values.firstname,
-      username: values.username,
-      email: values.email,
-      password: values.password,
-    });
-    toast({
-      title: "Success",
-      description: "New account successfully created.",
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-    });
-    history.push("/");
+    setIsLoading(true);
+    await axios
+      .post(" http://localhost:4000/user", {
+        firstname: values.firstname,
+        username: values.username,
+        email: values.email,
+        password: values.password,
+      })
+      .then(() => {
+        toast({
+          title: "Success",
+          description: "New account successfully created.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+        history.push("/");
+      })
+      .catch((err) => {
+        const errorMessage: string = err.response.data;
+        toast({
+          title: "Error",
+          description: errorMessage,
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      });
+    setIsLoading(false);
   };
 
   return (
-    <Center d="flex" w="100%" h="100%" flexDir="column">
-      <Heading mb=".75em">Sign Up</Heading>
-      <Center
-        w="25%"
-        h="60%"
-        d="flex"
-        flexDir="column"
-        justifyContent="space-between"
-        boxShadow="xl"
-        p="1.5em 2em"
-        rounded="3xl"
-      >
-        <FormControl id="first-name">
-          <FormLabel>First Name</FormLabel>
-          <Input
-            border="1px solid"
-            borderColor={backgroundColor}
-            type="name"
-            rounded="xl"
-            {...register("firstname")}
-          />
-        </FormControl>
-        <FormControl
-          isInvalid={!!errors?.email?.message}
-          errortext={errors?.email?.message}
-          isRequired
+    <>
+      <Center d="flex" w="100%" h="100%" flexDir="column">
+        <Heading mb=".75em">Sign Up</Heading>
+        <Center
+          w={["85%", "55%", "45%", "35%", "25%"]}
+          h={["70%", "65%", "60%"]}
+          d="flex"
+          flexDir="column"
+          justifyContent="space-between"
+          boxShadow="xl"
+          p="1.5em 2em"
+          rounded="3xl"
         >
-          <FormLabel>Email address</FormLabel>
-          <Input
-            border="1px solid"
-            borderColor={backgroundColor}
-            type="email"
-            rounded="xl"
-            {...register("email")}
-          />
-          <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-        </FormControl>
-        <FormControl
-          isInvalid={!!errors?.username?.message}
-          errortext={errors?.username?.message}
-          isRequired
-        >
-          <FormLabel>Username</FormLabel>
-          <Input
-            border="1px solid"
-            borderColor={backgroundColor}
-            type="username"
-            rounded="xl"
-            {...register("username")}
-          />
-          <FormErrorMessage>{errors.username?.message}</FormErrorMessage>
-        </FormControl>
-        <FormControl
-          isInvalid={!!errors?.password?.message}
-          errortext={errors?.password?.message}
-          isRequired
-        >
-          <FormLabel>Password</FormLabel>
-          <Input
-            border="1px solid"
-            borderColor={backgroundColor}
-            type="password"
-            rounded="xl"
-            {...register("password")}
-          />
-          <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-        </FormControl>
-        <FormControl
-          isInvalid={!!errors?.confirmpassword?.message}
-          errortext={errors?.confirmpassword?.message}
-          isRequired
-        >
-          <FormLabel>Confirm Password</FormLabel>
-          <Input
-            border="1px solid"
-            borderColor={backgroundColor}
-            type="password"
-            rounded="xl"
-            {...register("confirmpassword")}
-          />
-          <FormErrorMessage>{errors.confirmpassword?.message}</FormErrorMessage>
-        </FormControl>
+          <FormControl id="first-name">
+            <FormLabel>First Name</FormLabel>
+            <Input
+              border="1px solid"
+              borderColor={backgroundColor}
+              type="name"
+              rounded="xl"
+              {...register("firstname")}
+            />
+          </FormControl>
+          <FormControl
+            isInvalid={!!errors?.email?.message}
+            errortext={errors?.email?.message}
+            isRequired
+          >
+            <FormLabel>Email address</FormLabel>
+            <Input
+              border="1px solid"
+              borderColor={backgroundColor}
+              type="email"
+              rounded="xl"
+              {...register("email")}
+            />
+            <FormErrorMessage fontSize={["xs", "sm"]}>
+              {errors.email?.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl
+            isInvalid={!!errors?.username?.message}
+            errortext={errors?.username?.message}
+            isRequired
+          >
+            <FormLabel>Username</FormLabel>
+            <Input
+              border="1px solid"
+              borderColor={backgroundColor}
+              type="username"
+              rounded="xl"
+              {...register("username")}
+            />
+            <FormErrorMessage fontSize={["xs", "sm"]}>
+              {errors.username?.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl
+            isInvalid={!!errors?.password?.message}
+            errortext={errors?.password?.message}
+            isRequired
+          >
+            <FormLabel>Password</FormLabel>
+            <Input
+              border="1px solid"
+              borderColor={backgroundColor}
+              type="password"
+              rounded="xl"
+              {...register("password")}
+            />
+            <FormErrorMessage fontSize={["xs", "sm"]}>
+              {errors.password?.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl
+            isInvalid={!!errors?.confirmpassword?.message}
+            errortext={errors?.confirmpassword?.message}
+            isRequired
+          >
+            <FormLabel>Confirm Password</FormLabel>
+            <Input
+              border="1px solid"
+              borderColor={backgroundColor}
+              type="password"
+              rounded="xl"
+              {...register("confirmpassword")}
+            />
+            <FormErrorMessage fontSize={["xs", "sm"]}>
+              {errors.confirmpassword?.message}
+            </FormErrorMessage>
+          </FormControl>
+        </Center>
         <Button
+          isLoading={isLoading}
+          loadingText="Submitting"
+          mt="2"
           type="submit"
           colorScheme="blue"
-          alignSelf="flex-end"
           rounded="xl"
           fontWeight="300"
           onClick={handleSubmit(onSubmit)}
@@ -154,6 +182,7 @@ const SignUp = () => {
         </Button>
       </Center>
       <Button
+        size="sm"
         position="absolute"
         left="5"
         bottom="5"
@@ -167,7 +196,7 @@ const SignUp = () => {
       >
         Back
       </Button>
-    </Center>
+    </>
   );
 };
 

@@ -30,6 +30,7 @@ type LoginFormInputs = {
 };
 
 const Login = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
   const toast = useToast();
 
@@ -45,45 +46,49 @@ const Login = () => {
   const [show, setShow] = useState(false);
 
   const onSubmit = async (values: LoginFormInputs) => {
-    // const request = await axios.post(
-    //   `http://localhost:4000/user/${values.username}`,
-    //   {
-    //     auth: {
-    //       username: values.username,
-    //       password: values.password,
-    //     },
-    //   }
-    // );
-    const response = await axios.get(
-      `http://localhost:4000/user/${values.username}`
-    );
-    console.log(response.status);
-    if (response.status === 200) {
-      localStorage.setItem("login", JSON.stringify(true));
-      history.push("/dashboard");
-      toast({
-        title: "Success",
-        description: `Welcome ${values.username}`,
-        status: "success",
-        duration: 2000,
-        isClosable: true,
+    setIsLoading(true);
+    await axios
+      .post(`http://localhost:4000/user/${values.username}`, {
+        // bu kısım network -> headers -> request payloadda gözüküyor.
+        auth: {
+          username: values.username,
+          password: values.password,
+        },
+      })
+      .then(() => {
+        localStorage.setItem("login", JSON.stringify(true));
+        history.push("/dashboard");
+        toast({
+          title: "Success",
+          description: `Welcome ${values.username}`,
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        const errorMessage: string = err.response.data;
+        localStorage.setItem("login", JSON.stringify(false));
+        toast({
+          title: "Failed",
+          description: errorMessage,
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
       });
-    } else {
-      localStorage.setItem("login", JSON.stringify(false));
-      toast({
-        title: "Failed",
-        description: "Failed to signin. Check your username and password",
-        status: "error",
-        duration: 2000,
-        isClosable: true,
-      });
-    }
+    setIsLoading(false);
   };
 
-  const backgroundColor = useColorModeValue("#505153", "#E9D6AF");
+  const backgroundColor = useColorModeValue("#505153", "#90CDF4");
 
   return (
-    <Center w="25%" d="flex" h="40%" flexDir="column">
+    <Center
+      w={["85%", "55%", "45%", "35%", "25%"]}
+      d="flex"
+      h={["60%", "45%", "40%"]}
+      flexDir="column"
+    >
       <Heading mb="2rem" fontFamily="Poppins">
         Login
       </Heading>
@@ -151,6 +156,8 @@ const Login = () => {
           <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
         </FormControl>
         <Button
+          isLoading={isLoading}
+          loadingText="Logging in"
           type="submit"
           w="100%"
           size="md"
