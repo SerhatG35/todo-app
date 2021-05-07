@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { useHistory, Link as ReactLink } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema } from "src/constants/YupSchema";
+
 import {
   Center,
   Input,
@@ -15,11 +20,6 @@ import {
   FormControl,
   FormErrorMessage,
 } from "@chakra-ui/react";
-
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "src/constants/YupSchema";
-
 import { BiShow, BiHide, BiUser, BiLock } from "react-icons/bi";
 
 import axios from "axios";
@@ -47,16 +47,16 @@ const Login = () => {
 
   const onSubmit = async (values: LoginFormInputs) => {
     setIsLoading(true);
-    await axios
-      .post(`http://localhost:4000/user/${values.username}`, {
-        // bu kısım network -> headers -> request payloadda gözüküyor.
+    try {
+      const { data } = await axios.post("http://localhost:4000/login", {
         auth: {
           username: values.username,
           password: values.password,
         },
-      })
-      .then(() => {
-        localStorage.setItem("login", JSON.stringify(true));
+      });
+      if (data) {
+        localStorage.setItem("login", JSON.stringify(data));
+        window.dispatchEvent(new Event("storage"));
         history.push("/dashboard");
         toast({
           title: "Success",
@@ -65,22 +65,20 @@ const Login = () => {
           duration: 2000,
           isClosable: true,
         });
-      })
-      .catch((err) => {
-        const errorMessage: string = err.response.data;
-        localStorage.setItem("login", JSON.stringify(false));
-        toast({
-          title: "Failed",
-          description: errorMessage,
-          status: "error",
-          duration: 2000,
-          isClosable: true,
-        });
+      }
+    } catch (error) {
+      toast({
+        title: "Failed",
+        description: error.response.data,
+        status: "error",
+        duration: 2000,
+        isClosable: true,
       });
-    setIsLoading(false);
+      setIsLoading(false);
+    }
   };
 
-  const backgroundColor = useColorModeValue("#505153", "#90CDF4");
+  const backgroundColor = useColorModeValue("#505153", "#ADCAD7");
 
   return (
     <Center
@@ -182,7 +180,7 @@ const Login = () => {
             _focus={{
               boxShadow: "none",
             }}
-            color="purple"
+            color="green.600"
           >
             Sign Up
           </Link>

@@ -38,14 +38,14 @@ const SignUp = () => {
     resolver: yupResolver(signUpSchema),
   });
 
-  const backgroundColor = useColorModeValue("#505153", "#90CDF4");
-  const fontColor = useColorModeValue("#EBEBEB", "#90CDF4");
-  const hoverColor = useColorModeValue("#90CDF4", "#EBEBEB");
+  const backgroundColor = useColorModeValue("#505153", "#ADCAD7");
+  const fontColor = useColorModeValue("#EBEBEB", "#ADCAD7");
+  const hoverColor = useColorModeValue("#ADCAD7", "#EBEBEB");
 
   const onSubmit = async (values: SignUpFormInputs) => {
     setIsLoading(true);
     await axios
-      .post(" http://localhost:4000/user", {
+      .post("http://localhost:4000/register", {
         firstname: values.firstname,
         username: values.username,
         email: values.email,
@@ -54,18 +54,17 @@ const SignUp = () => {
       .then(() => {
         toast({
           title: "Success",
-          description: "New account successfully created.",
+          description: "New account created.",
           status: "success",
           duration: 2000,
           isClosable: true,
         });
         history.push("/");
       })
-      .catch((err) => {
-        const errorMessage: string = err.response.data;
+      .catch((error) => {
         toast({
           title: "Error",
-          description: errorMessage,
+          description: error.response.data,
           status: "error",
           duration: 2000,
           isClosable: true,

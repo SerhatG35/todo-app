@@ -4,6 +4,7 @@ import {
   Center,
   Avatar,
   useColorModeValue,
+  Heading,
 } from "@chakra-ui/react";
 
 import { useHistory } from "react-router-dom";
@@ -11,14 +12,22 @@ import { useHistory } from "react-router-dom";
 const HomeLeft = () => {
   const history = useHistory();
 
-  const fontColor = useColorModeValue("#EBEBEB", "#90CDF4");
-  const hoverColor = useColorModeValue("#90CDF4", "#EBEBEB");
+  const fontColor = useColorModeValue("#EBEBEB", "#ADCAD7");
+  const hoverColor = useColorModeValue("#ADCAD7", "#EBEBEB");
 
   return (
     <>
       <Flex flexDir="column" w="15%" h="100%" position="relative">
-        <Center mt="2rem" d="flex" justifyContent="space-evenly">
+        <Center
+          mt="2rem"
+          d="flex"
+          justifyContent="space-evenly"
+          flexDir="column"
+        >
           <Avatar size="xl" userSelect="none" />
+          <Heading>
+            {JSON.parse(localStorage.getItem("login") || "{}").userName}
+          </Heading>
         </Center>
         <Button
           size="sm"
@@ -32,7 +41,7 @@ const HomeLeft = () => {
           _hover={{ color: hoverColor }}
           onClick={() => {
             localStorage.removeItem("login");
-            localStorage.removeItem("username");
+            window.dispatchEvent(new Event("storage"));
             history.push("/");
           }}
         >

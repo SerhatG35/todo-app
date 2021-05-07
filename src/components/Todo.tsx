@@ -1,38 +1,72 @@
-import { IconButton, Input, Heading, Flex, Text } from "@chakra-ui/react";
+import {
+  IconButton,
+  Input,
+  Heading,
+  Flex,
+  Text,
+  Checkbox,
+} from "@chakra-ui/react";
+import axios from "axios";
+import { Card, TodoType } from "global";
+import { useContext } from "react";
 
 import { useEffect, useRef, useState } from "react";
 
 import { AiOutlineCheck, AiFillEdit } from "react-icons/ai";
 import { TiDeleteOutline } from "react-icons/ti";
+import UserContext from "src/context/userContext";
 
 type TodoProps = {
   setValid: React.Dispatch<React.SetStateAction<boolean>>;
+  setCards: React.Dispatch<React.SetStateAction<Card[]>>;
+  cards: Card[];
 };
 
-const Todo = ({ setValid }: TodoProps) => {
+const Todo = ({ setValid, setCards, cards }: TodoProps) => {
   const [title, setTitle] = useState<string | undefined>(undefined);
-  const [todos, setTodos] = useState<string[]>([]);
+  const [todos, setTodos] = useState<TodoType[]>([]);
   const titleRef = useRef<HTMLInputElement>(null);
   const todoRef = useRef<HTMLInputElement>(null);
 
   const addTodo = () => {
-    const newTodos: string[] = [...todos];
+    const newTodos: TodoType[] = [...todos];
     if (todoRef.current && todoRef.current?.value !== "") {
-      newTodos.push(todoRef.current?.value);
-      setTodos(newTodos);
-      todoRef.current.value = "";
+      const result = todos.find((todo) => todo.todo === todoRef.current?.value);
+      if (!result) {
+        newTodos.push({ todo: todoRef.current?.value, isCompleted: false });
+        setTodos(newTodos);
+        todoRef.current.value = "";
+      } else todoRef.current.value = "";
     }
   };
 
-  const deleteTodo = () => {};
+  const completeTodo = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    completeTodo: TodoType
+  ) => {
+    const completedChange = [...todos];
+    completedChange.forEach((elm) => {
+      if (elm.todo === completeTodo.todo) {
+        elm.isCompleted = e.target.checked;
+      }
+    });
+    setTodos(completedChange);
+  };
+
+  const deleteTodo = (deleteTodo: string) => {
+    setTodos(() => todos.filter((todo) => todo.todo !== deleteTodo));
+  };
 
   useEffect(() => {
-    if (title) {
-      setValid(true);
-    } else {
-      setValid(false);
-    }
-  }, [title]);
+    if (title) setValid(true);
+    else setValid(false);
+  }, [title, setValid]);
+
+  useEffect(() => {
+    const newCardState = [...cards];
+    newCardState.push({ title: title, todos: todos });
+    setCards(newCardState);
+  }, [todos]);
 
   return (
     <Flex
@@ -57,10 +91,17 @@ const Todo = ({ setValid }: TodoProps) => {
                     key={index + 100}
                     justify="space-between"
                     align="center"
-                    _hover={{ bgColor: "#CBD5E0" }}
                     mt="5"
                   >
-                    <Text>{todo}</Text>
+                    <Flex align="center">
+                      <Checkbox
+                        mr="2"
+                        borderColor="darkgray"
+                        colorScheme="orange"
+                        onChange={(e) => completeTodo(e, todo)}
+                      />
+                      <Text>{todo.todo}</Text>
+                    </Flex>
                     <Flex align="center">
                       <IconButton
                         ml="2"
@@ -79,7 +120,7 @@ const Todo = ({ setValid }: TodoProps) => {
                         colorScheme="red"
                         size="xs"
                         fontSize="2xl"
-                        onClick={deleteTodo}
+                        onClick={() => deleteTodo(todo.todo)}
                         icon={<TiDeleteOutline />}
                         aria-label="delete todo"
                       />

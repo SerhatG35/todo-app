@@ -1,22 +1,33 @@
 import { Center, Flex, IconButton, Heading, useToast } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Todo from "./Todo";
 
 import { GrAdd } from "react-icons/gr";
+import { Card } from "global";
+import axios from "axios";
+import { useContext } from "react";
+import UserContext from "src/context/userContext";
 
 const HomeRight = () => {
+  const loggedUser = useContext(UserContext);
   const toast = useToast();
-  const [totalTodos, setTotalTodos] = useState<JSX.Element[]>([]);
-  const [valid, setValid] = useState(true);
+  const [cardJsx, setCardJsx] = useState<JSX.Element[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [valid, setValid] = useState(true); // if the card has title
 
   const addNewTodo = () => {
-    const currentTodos: JSX.Element[] = [...totalTodos];
+    const updateCards: JSX.Element[] = [...cardJsx];
     if (valid) {
-      currentTodos.unshift(
-        <Todo setValid={setValid} key={currentTodos.length} />
+      updateCards.unshift(
+        <Todo
+          cards={cards}
+          setCards={setCards}
+          setValid={setValid}
+          key={updateCards.length}
+        />
       );
-      setTotalTodos(currentTodos);
+      setCardJsx(updateCards);
     } else {
       toast({
         title: "Please fill the title",
@@ -27,9 +38,34 @@ const HomeRight = () => {
     }
   };
 
+  const updateDatabase = async () => {
+    const { data } = await axios.post(
+      "http://localhost:4000/todos",
+      {
+        id: loggedUser?.user?.id,
+        username: loggedUser?.user?.userName,
+        cards: cards,
+      },
+      {
+        headers: {
+          Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("login") || "{}").token,
+        },
+      }
+    );
+    console.log(data);
+  };
+
+  useEffect(() => {
+    cards.forEach((card) => {
+      if (card.title) return updateDatabase();
+    });
+    console.log(cards);
+  }, [cards]);
+
   return (
     <Flex py="10" px="5" w="85%" h="100%" d="flex" flexWrap="wrap">
-      {totalTodos}
+      {cardJsx}
       <Center
         d="flex"
         flexDir="column"
