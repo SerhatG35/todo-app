@@ -1,11 +1,11 @@
-import HomeLeft from "src/components/HomeLeft";
-import HomeRight from "src/components/HomeRight";
+import CardContainer from 'src/components/CardContainer';
+import Profile from 'src/components/Profile';
 
 const Home = () => {
   return (
     <>
-      <HomeLeft />
-      <HomeRight />
+      <Profile />
+      <CardContainer />
     </>
   );
 };
