@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { useHistory, Link as ReactLink } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import React, { useState } from 'react';
+import { useHistory, Link as ReactLink } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
-import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "src/constants/YupSchema";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { loginSchema } from 'src/constants/YupSchema';
 
 import {
   Center,
@@ -13,16 +13,15 @@ import {
   Button,
   useColorModeValue,
   Heading,
-  useToast,
   InputLeftElement,
   Text,
   Link,
   FormControl,
   FormErrorMessage,
-} from "@chakra-ui/react";
-import { BiShow, BiHide, BiUser, BiLock } from "react-icons/bi";
-
-import axios from "axios";
+} from '@chakra-ui/react';
+import { BiShow, BiHide, BiUser, BiLock } from 'react-icons/bi';
+import { Auth } from 'src/service/axios';
+import { toaster } from 'src/utils/toaster';
 
 type LoginFormInputs = {
   username: string;
@@ -30,61 +29,45 @@ type LoginFormInputs = {
 };
 
 const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
-  const toast = useToast();
+  const backgroundColor = useColorModeValue('#505153', '#ADCAD7');
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [show, setShow] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>({
-    mode: "onBlur",
+    mode: 'onBlur',
     resolver: yupResolver(loginSchema),
   });
-
-  const [show, setShow] = useState(false);
 
   const onSubmit = async (values: LoginFormInputs) => {
     setIsLoading(true);
     try {
-      const { data } = await axios.post("http://localhost:4000/login", {
+      const data = await Auth.login({
         auth: {
           username: values.username,
           password: values.password,
         },
       });
       if (data) {
-        localStorage.setItem("login", JSON.stringify(data));
-        window.dispatchEvent(new Event("storage"));
-        history.push("/dashboard");
-        toast({
-          title: "Success",
-          description: `Welcome ${values.username}`,
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
+        history.push('/dashboard');
+        toaster('Success', `Welcome ${data.userName}`, 'success');
       }
     } catch (error) {
-      toast({
-        title: "Failed",
-        description: error.response.data,
-        status: "error",
-        duration: 2000,
-        isClosable: true,
-      });
+      toaster('Success', error.response.data, 'error');
       setIsLoading(false);
     }
   };
 
-  const backgroundColor = useColorModeValue("#505153", "#ADCAD7");
-
   return (
     <Center
-      w={["85%", "55%", "45%", "35%", "25%"]}
+      w={['85%', '55%', '45%', '35%', '25%']}
       d="flex"
-      h={["60%", "45%", "40%"]}
+      h={['60%', '45%', '40%']}
       flexDir="column"
     >
       <Heading mb="2rem" fontFamily="Poppins">
@@ -107,7 +90,7 @@ const Login = () => {
           <InputGroup size="md">
             <InputLeftElement fontSize="xl" children={<BiUser />} />
             <Input
-              {...register("username")}
+              {...register('username')}
               name="username"
               type="username"
               fontWeight="300"
@@ -127,9 +110,9 @@ const Login = () => {
           <InputGroup size="md">
             <InputLeftElement fontSize="xl" children={<BiLock />} />
             <Input
-              {...register("password")}
+              {...register('password')}
               pr="3.5rem"
-              type={show ? "text" : "password"}
+              type={show ? 'text' : 'password'}
               placeholder="Enter Password"
               borderColor={backgroundColor}
               colorScheme="purple"
@@ -143,7 +126,7 @@ const Login = () => {
                 fontSize="xl"
                 onClick={() => setShow(!show)}
                 _focus={{
-                  boxShadow: "none",
+                  boxShadow: 'none',
                 }}
                 bgColor="transparent"
               >
@@ -162,7 +145,7 @@ const Login = () => {
           fontSize="md"
           aria-label="login"
           _focus={{
-            boxShadow: "none",
+            boxShadow: 'none',
           }}
           onClick={handleSubmit(onSubmit)}
           fontWeight="500"
@@ -178,7 +161,7 @@ const Login = () => {
             as={ReactLink}
             to="/signup"
             _focus={{
-              boxShadow: "none",
+              boxShadow: 'none',
             }}
             color="green.600"
           >

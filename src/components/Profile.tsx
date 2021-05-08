@@ -5,15 +5,15 @@ import {
   Avatar,
   useColorModeValue,
   Heading,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
-const HomeLeft = () => {
+const Profile = () => {
   const history = useHistory();
 
-  const fontColor = useColorModeValue("#EBEBEB", "#ADCAD7");
-  const hoverColor = useColorModeValue("#ADCAD7", "#EBEBEB");
+  const fontColor = useColorModeValue('#EBEBEB', '#ADCAD7');
+  const hoverColor = useColorModeValue('#ADCAD7', '#EBEBEB');
 
   return (
     <>
@@ -26,7 +26,7 @@ const HomeLeft = () => {
         >
           <Avatar size="xl" userSelect="none" />
           <Heading>
-            {JSON.parse(localStorage.getItem("login") || "{}").userName}
+            {JSON.parse(localStorage.getItem('login') || '{}').userName}
           </Heading>
         </Center>
         <Button
@@ -40,9 +40,9 @@ const HomeLeft = () => {
           color={fontColor}
           _hover={{ color: hoverColor }}
           onClick={() => {
-            localStorage.removeItem("login");
-            window.dispatchEvent(new Event("storage"));
-            history.push("/");
+            localStorage.removeItem('login');
+            window.dispatchEvent(new Event('storage'));
+            history.push('/');
           }}
         >
           Logout
@@ -52,4 +52,4 @@ const HomeLeft = () => {
   );
 };
 
-export default HomeLeft;
+export default Profile;

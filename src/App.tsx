@@ -1,18 +1,19 @@
-import { lazy, Suspense } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import ColorModeButton from "./components/ColorModeButton";
-import PrivateRoute from "./components/PrivateRoute";
+import ColorModeButton from './components/ColorModeButton';
+import PrivateRoute from './components/PrivateRoute';
 
-import useVerifyAuth from "./hooks/useVerifyAuth";
+import useVerifyAuth from './hooks/useVerifyAuth';
 
-import { ChakraProvider, Center, Heading } from "@chakra-ui/react";
-import theme from "./theme";
-import UserContext from "./context/userContext";
+import { ChakraProvider, Center, Heading } from '@chakra-ui/react';
+import theme from './theme';
+import UserContext from './context/userContext';
+import { ROUTES } from './constants/routes';
 
-const Login = lazy(() => import("./pages/Login"));
-const SignUp = lazy(() => import("./pages/SignUp"));
-const Home = lazy(() => import("./pages/Home"));
+const Login = lazy(() => import('./pages/Login'));
+const SignUp = lazy(() => import('./pages/SignUp'));
+const Home = lazy(() => import('./pages/Home'));
 
 function App() {
   const { user } = useVerifyAuth();
@@ -27,7 +28,7 @@ function App() {
               <Switch>
                 <Route exact path="/" component={Login} />
                 <Route exact path="/signup" component={SignUp} />
-                <PrivateRoute user={user} path="/dashboard" exact>
+                <PrivateRoute user={user} path={ROUTES.DASHBOARD} exact>
                   <Home />
                 </PrivateRoute>
               </Switch>

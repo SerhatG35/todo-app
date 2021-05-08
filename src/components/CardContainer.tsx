@@ -1,15 +1,16 @@
-import { Center, Flex, IconButton, Heading, useToast } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Center, Flex, IconButton, Heading, useToast } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
-import Todo from "./Todo";
+import Todo from './Todo';
 
-import { GrAdd } from "react-icons/gr";
-import { Card } from "global";
-import axios from "axios";
-import { useContext } from "react";
-import UserContext from "src/context/userContext";
+import { GrAdd } from 'react-icons/gr';
+import { Card } from 'global';
+import axios from 'axios';
+import { useContext } from 'react';
+import UserContext from 'src/context/userContext';
+import API from 'src/service/axios';
 
-const HomeRight = () => {
+const CardContainer = () => {
   const loggedUser = useContext(UserContext);
   const toast = useToast();
   const [cardJsx, setCardJsx] = useState<JSX.Element[]>([]);
@@ -30,8 +31,8 @@ const HomeRight = () => {
       setCardJsx(updateCards);
     } else {
       toast({
-        title: "Please fill the title",
-        status: "warning",
+        title: 'Please fill the title',
+        status: 'warning',
         duration: 2000,
         isClosable: true,
       });
@@ -39,22 +40,31 @@ const HomeRight = () => {
   };
 
   const updateDatabase = async () => {
-    const { data } = await axios.post(
-      "http://localhost:4000/todos",
-      {
-        id: loggedUser?.user?.id,
-        username: loggedUser?.user?.userName,
-        cards: cards,
-      },
-      {
-        headers: {
-          Authorization:
-            "Bearer " + JSON.parse(localStorage.getItem("login") || "{}").token,
-        },
-      }
-    );
+    const { data } = await API.post('http://localhost:4000/todos', {
+      id: loggedUser?.user?.id,
+      username: loggedUser?.user?.userName,
+      cards: cards,
+    });
     console.log(data);
   };
+
+  // const getAllTodos = async () => {
+  //   const { data } = await axios.post(
+  //     "http://localhost:4000/todos",
+  //     {
+  //       id: loggedUser?.user?.id,
+  //       username: loggedUser?.user?.userName,
+  //       cards: cards,
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization:
+  //           "Bearer " + JSON.parse(localStorage.getItem("login") || "{}").token,
+  //       },
+  //     }
+  //   );
+  //   console.log(data);
+  // };
 
   useEffect(() => {
     cards.forEach((card) => {
@@ -80,7 +90,7 @@ const HomeRight = () => {
           Add New Todo Card
         </Heading>
         <IconButton
-          _focus={{ boxShadow: "none" }}
+          _focus={{ boxShadow: 'none' }}
           mt="5"
           colorScheme="blue"
           fontSize="3xl"
@@ -93,4 +103,4 @@ const HomeRight = () => {
   );
 };
 
-export default HomeRight;
+export default CardContainer;

@@ -5,16 +5,16 @@ import {
   Flex,
   Text,
   Checkbox,
-} from "@chakra-ui/react";
-import axios from "axios";
-import { Card, TodoType } from "global";
-import { useContext } from "react";
+} from '@chakra-ui/react';
+import axios from 'axios';
+import { Card, TodoType } from 'global';
+import { useContext } from 'react';
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import { AiOutlineCheck, AiFillEdit } from "react-icons/ai";
-import { TiDeleteOutline } from "react-icons/ti";
-import UserContext from "src/context/userContext";
+import { AiOutlineCheck, AiFillEdit } from 'react-icons/ai';
+import { TiDeleteOutline } from 'react-icons/ti';
+import UserContext from 'src/context/userContext';
 
 type TodoProps = {
   setValid: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,13 +30,13 @@ const Todo = ({ setValid, setCards, cards }: TodoProps) => {
 
   const addTodo = () => {
     const newTodos: TodoType[] = [...todos];
-    if (todoRef.current && todoRef.current?.value !== "") {
+    if (todoRef.current && todoRef.current?.value !== '') {
       const result = todos.find((todo) => todo.todo === todoRef.current?.value);
       if (!result) {
         newTodos.push({ todo: todoRef.current?.value, isCompleted: false });
         setTodos(newTodos);
-        todoRef.current.value = "";
-      } else todoRef.current.value = "";
+        todoRef.current.value = '';
+      } else todoRef.current.value = '';
     }
   };
 
@@ -105,8 +105,8 @@ const Todo = ({ setValid, setCards, cards }: TodoProps) => {
                     <Flex align="center">
                       <IconButton
                         ml="2"
-                        _focus={{ boxShadow: "none" }}
-                        _hover={{ backgroundColor: "none", opacity: "0.4" }}
+                        _focus={{ boxShadow: 'none' }}
+                        _hover={{ backgroundColor: 'none', opacity: '0.4' }}
                         colorScheme="teal"
                         size="xs"
                         fontSize="2xl"
@@ -115,8 +115,8 @@ const Todo = ({ setValid, setCards, cards }: TodoProps) => {
                       />
                       <IconButton
                         ml="2"
-                        _focus={{ boxShadow: "none" }}
-                        _hover={{ backgroundColor: "none", opacity: "0.4" }}
+                        _focus={{ boxShadow: 'none' }}
+                        _hover={{ backgroundColor: 'none', opacity: '0.4' }}
                         colorScheme="red"
                         size="xs"
                         fontSize="2xl"

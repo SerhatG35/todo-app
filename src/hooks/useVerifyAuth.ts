@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import {User} from "global"
- 
-export default function useAuthListener(){
-    const [user, setUser] = useState<User | null>(() => JSON.parse(localStorage.getItem("login") || "null"))
+import { User } from 'global';
 
-    const checkToken = () => {
-      const login:User = JSON.parse(localStorage.getItem("login") || "{}")
-      if(login?.token) setUser(login)
-      else setUser(null)
-    }
+export default function useAuthListener() {
+  const [user, setUser] = useState<User | null>(() =>
+    JSON.parse(localStorage.getItem('login') || 'null')
+  );
 
-    useEffect(() => {
-          window.addEventListener("storage",checkToken)
-        },[])
+  const checkToken = () => {
+    const login: User = JSON.parse(localStorage.getItem('login') || '{}');
+    if (login?.token) setUser(login);
+    else setUser(null);
+  };
 
-    return { user };
+  useEffect(() => {
+    window.addEventListener('storage', checkToken);
+  }, []);
+
+  return { user };
 }
