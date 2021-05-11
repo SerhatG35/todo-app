@@ -17,26 +17,26 @@ const Profile = () => {
 
   return (
     <>
-      <Flex flexDir="column" w="15%" h="100%" position="relative">
+      <Flex flexDir='column' w='15%' h='100%' position='relative'>
         <Center
-          mt="2rem"
-          d="flex"
-          justifyContent="space-evenly"
-          flexDir="column"
+          mt='2rem'
+          d='flex'
+          justifyContent='space-evenly'
+          flexDir='column'
         >
-          <Avatar size="xl" userSelect="none" />
+          <Avatar size='xl' userSelect='none' />
           <Heading>
             {JSON.parse(localStorage.getItem('login') || '{}').userName}
           </Heading>
         </Center>
         <Button
-          size="sm"
-          position="absolute"
-          left="5"
-          bottom="5"
-          bgColor="#505153"
-          fontWeight="500"
-          rounded="xl"
+          size='sm'
+          position='absolute'
+          left='5'
+          bottom='5'
+          bgColor='#505153'
+          fontWeight='500'
+          rounded='xl'
           color={fontColor}
           _hover={{ color: hoverColor }}
           onClick={() => {

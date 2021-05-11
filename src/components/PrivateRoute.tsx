@@ -1,7 +1,7 @@
-import { User } from "global";
+import { User } from 'global';
 
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
 
 type PrivateRouteProps = {
   user: User | null;
@@ -21,7 +21,7 @@ const PrivateRoute = ({ user, children, ...rest }: PrivateRouteProps) => {
           return (
             <Redirect
               to={{
-                pathname: "/",
+                pathname: '/',
                 state: { from: location },
               }}
             />
