@@ -5,87 +5,65 @@ import {
   Flex,
   Text,
   Checkbox,
+  Center,
 } from '@chakra-ui/react';
+import { AiOutlineCheck } from 'react-icons/ai';
+import { TiDeleteOutline } from 'react-icons/ti';
+import { BsTrash } from 'react-icons/bs';
+
 import { Card, TodoType } from 'global';
 
 import { useContext, useEffect, useRef, useState } from 'react';
-
-import { AiOutlineCheck, AiFillEdit } from 'react-icons/ai';
-import { TiDeleteOutline } from 'react-icons/ti';
+import { useDispatch } from 'react-redux';
 import UserContext from 'src/context/userContext';
-import { updateDatabase } from 'src/utils/databaseActions';
+
+import {
+  addTitleCard,
+  addTodo,
+  completeTodo,
+  deleteCard,
+  deleteTodo,
+  updateCards,
+  updateDatabase,
+} from 'src/utils/functions';
+import TodoEdit from './TodoEdit';
 
 type TodoProps = {
   setValid: React.Dispatch<React.SetStateAction<boolean>>;
-  setCards: React.Dispatch<React.SetStateAction<Card[]>>;
+  receivedTitle?: string | undefined;
+  receivedTodos?: TodoType[];
   cards: Card[];
-  receivedCards?: Card;
 };
 
 const CardComponent = ({
   setValid,
-  setCards,
+  receivedTitle,
+  receivedTodos,
   cards,
-  receivedCards,
 }: TodoProps) => {
-  const loggedUser = useContext(UserContext);
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [todos, setTodos] = useState<TodoType[]>([]);
   const titleRef = useRef<HTMLInputElement>(null);
   const todoRef = useRef<HTMLInputElement>(null);
 
-  const addTodo = () => {
-    const newTodos: TodoType[] = [...todos];
-    if (todoRef.current && todoRef.current?.value !== '') {
-      const todoExists = todos.find(
-        (todo) => todo.todo === todoRef.current?.value
-      );
-      if (!todoExists) {
-        newTodos.push({ todo: todoRef.current?.value, isCompleted: false });
-        setTodos(newTodos);
-        todoRef.current.value = '';
-      } else todoRef.current.value = '';
+  const loggedUser = useContext(UserContext);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    updateCards(title, todos, dispatch, cards);
+  }, [todos, title]);
+
+  useEffect(() => {
+    if (receivedTitle && receivedTodos) {
+      setTitle(receivedTitle);
+      setTodos(receivedTodos);
     }
-  };
-
-  const completeTodo = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    completeTodo: TodoType
-  ) => {
-    const completedChange = [...todos];
-    completedChange.forEach((elm) => {
-      if (elm.todo === completeTodo.todo) {
-        elm.isCompleted = e.target.checked;
-      }
-    });
-    setTodos(completedChange);
-  };
-
-  const deleteTodo = (deleteTodo: string) => {
-    setTodos(() => todos.filter((todo) => todo.todo !== deleteTodo));
-  };
+  }, []);
 
   useEffect(() => {
     if (title) setValid(true);
     else setValid(false);
   }, [title, setValid]);
-
-  useEffect(() => {
-    console.log(todos);
-    if (todos.length > 0) {
-      const newCardState = [...cards];
-      newCardState.push({ title: title, todos: todos });
-      setCards(newCardState);
-      updateDatabase(cards, loggedUser);
-    }
-  }, [todos]);
-
-  useEffect(() => {
-    if (receivedCards) {
-      setTitle(receivedCards.title);
-      setTodos(receivedCards.todos);
-    }
-  }, []);
 
   return (
     <Flex
@@ -98,6 +76,7 @@ const CardComponent = ({
       flexDir='column'
       flexWrap='wrap'
       boxShadow='lg'
+      position='relative'
     >
       {title ? (
         <>
@@ -114,24 +93,22 @@ const CardComponent = ({
                   >
                     <Flex align='center'>
                       <Checkbox
+                        isChecked={todo.isCompleted}
                         mr='2'
                         borderColor='darkgray'
                         colorScheme='orange'
-                        onChange={(e) => completeTodo(e, todo)}
+                        onChange={(e) => completeTodo(e, todo, todos, setTodos)}
                       />
-                      <Text>{todo.todo}</Text>
+                      <Text
+                        textDecoration={
+                          todo.isCompleted ? 'line-through' : 'none'
+                        }
+                      >
+                        {todo.todo}
+                      </Text>
                     </Flex>
-                    <Flex align='center'>
-                      <IconButton
-                        ml='2'
-                        _focus={{ boxShadow: 'none' }}
-                        _hover={{ backgroundColor: 'none', opacity: '0.4' }}
-                        colorScheme='teal'
-                        size='xs'
-                        fontSize='2xl'
-                        icon={<AiFillEdit />}
-                        aria-label='edit todo'
-                      />
+                    <Center>
+                      <TodoEdit todo={todo.todo} todos={todos} index={index}setTodos={setTodos}/>
                       <IconButton
                         ml='2'
                         _focus={{ boxShadow: 'none' }}
@@ -139,40 +116,56 @@ const CardComponent = ({
                         colorScheme='red'
                         size='xs'
                         fontSize='2xl'
-                        onClick={() => deleteTodo(todo.todo)}
+                        onClick={() => deleteTodo(todo.todo, setTodos, todos)}
                         icon={<TiDeleteOutline />}
                         aria-label='delete todo'
                       />
-                    </Flex>
+                    </Center>
                   </Flex>
                 );
               })}
           </Flex>
+          <IconButton
+            _focus={{ boxShadow: 'none' }}
+            colorScheme='red'
+            fontSize='xl'
+            size='xs'
+            icon={<BsTrash />}
+            position='absolute'
+            top='2'
+            right='2'
+            aria-label='delete card'
+            onClick={() => deleteCard(title, cards, dispatch)}
+          />
         </>
       ) : (
         <Flex>
-          <Input ref={titleRef} placeholder='Add Todo Title' />
+          <Input size='sm' ref={titleRef} placeholder='Add Todo Title' />
           <IconButton
+            size='sm'
             colorScheme='green'
             ml='3'
             aria-label='add title'
-            onClick={() => setTitle(titleRef.current?.value)}
+            onClick={() => {
+              addTitleCard(cards, titleRef, setTitle);
+            }}
             icon={<AiOutlineCheck />}
           />
         </Flex>
       )}
 
       {title && todos.length < 5 && (
-        <Flex mt='3'>
-          <Input ref={todoRef} placeholder='Add Todo' />
+        <Center mt='3'>
+          <Input size='sm' ref={todoRef} placeholder='Add Todo' />
           <IconButton
+            size='sm'
             colorScheme='green'
-            onClick={addTodo}
+            onClick={() => addTodo(todos, todoRef, setTodos)}
             aria-label='add todo'
             icon={<AiOutlineCheck />}
             ml='3'
           />
-        </Flex>
+        </Center>
       )}
     </Flex>
   );

@@ -28,7 +28,7 @@ export type registerTypes = {
   password: string;
 };
 
-export type updateUserTypes = {
+export type databaseType = {
   id: string;
   username: string;
   cards: Card[];

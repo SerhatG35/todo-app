@@ -2,50 +2,50 @@ import { Center, Flex, IconButton, Heading } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 
 import { GrAdd } from 'react-icons/gr';
-import { Card } from 'global';
 import { Auth } from 'src/service/axios';
-import {
-  addNewCard,
-  databaseCardsToState,
-  updateDatabase,
-} from 'src/utils/databaseActions';
+import { addNewCard, updateDatabase } from 'src/utils/functions';
+import { useDispatch } from 'react-redux';
+import { setCards } from 'src/redux/cardsSlice';
+import useCardState from 'src/hooks/useCardState';
+import CardComponent from './CardComponent';
 import UserContext from 'src/context/userContext';
 
 const CardContainer = () => {
-  const loggedUser = useContext(UserContext);
-  const [cardJsx, setCardJsx] = useState<JSX.Element[]>([]);
-  const [cards, setCards] = useState<Card[]>([]);
-  const [receivedUserCards, setReceivedUserCards] = useState<Card[]>([]);
+  const dispatch = useDispatch();
   const [valid, setValid] = useState(true); // if the card has title
+  const cards = useCardState();
+  const loggedUser = useContext(UserContext);
 
   const getAllCards = async () => {
     const { cards: receivedCards } = await Auth.getCards();
-    if (receivedCards) setReceivedUserCards(receivedCards);
+    console.log(receivedCards);
+    if (receivedCards) {
+      dispatch(setCards(receivedCards));
+    }
   };
-
-  useEffect(() => {
-    // if (cards[0]?.title) updateDatabase(cards, loggedUser);
-    console.log(cards);
-  }, [cards]);
 
   useEffect(() => {
     getAllCards();
   }, []);
 
   useEffect(() => {
-    databaseCardsToState({
-      cardJsx,
-      receivedUserCards,
-      cards,
-      setCards,
-      setValid,
-      setCardJsx,
-    });
-  }, [receivedUserCards]);
+    console.log(cards);
+    updateDatabase(cards, loggedUser);
+  }, [cards]);
 
   return (
     <Flex py='10' px='5' w='85%' h='100%' d='flex' flexWrap='wrap'>
-      {cardJsx}
+      {cards.map((card, i) => {
+        return (
+          <CardComponent
+            key={i}
+            receivedTitle={card.title}
+            receivedTodos={card.todos}
+            setValid={setValid}
+            cards={cards}
+          />
+        );
+      })}
       <Center
         d='flex'
         flexDir='column'
@@ -60,22 +60,14 @@ const CardContainer = () => {
           Add New Todo Card
         </Heading>
         <IconButton
+          size='sm'
           _focus={{ boxShadow: 'none' }}
           mt='5'
           colorScheme='blue'
-          fontSize='3xl'
+          fontSize='2xl'
           icon={<GrAdd />}
           aria-label='add new todo card'
-          onClick={() =>
-            addNewCard({
-              valid,
-              cardJsx,
-              cards,
-              setCards,
-              setValid,
-              setCardJsx,
-            })
-          }
+          onClick={() => addNewCard(cards, valid, dispatch)}
         />
       </Center>
     </Flex>

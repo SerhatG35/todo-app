@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { loginTypes, registerTypes, updateUserTypes, User } from 'global';
+import {  databaseType, loginTypes, registerTypes, User } from 'global';
 
-const PROD_API = 'http://54.236.229.160:6500/api/';
+// const PROD_API = 'place your production api here';
 const LOCAL_API = 'http://localhost:4000/';
 
 const API = axios.create({
@@ -24,12 +24,12 @@ export const Auth = {
   getCards: async () => {
     const login: User = JSON.parse(localStorage.getItem('login') || '{}');
     API.interceptors.request.use((config) => injectToken(config, login?.token));
-    const { data } = await API.get('/todos');
+    const { data } = await API.get<databaseType>('/todos');
     return data;
   },
-  updateDatabase: async (params: updateUserTypes) => {
+  updateDatabase: async (params: databaseType) => {
     const data = await API.post('http://localhost:4000/todos', { ...params });
-    return data
+    return data;
   },
 };
 
