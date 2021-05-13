@@ -1,12 +1,12 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import {  databaseType, loginTypes, registerTypes, User } from 'global';
+import { databaseType, loginTypes, registerTypes, User } from 'global';
 
-// const PROD_API = 'place your production api here';
+const PROD_API = 'https://my-todo-app-backend.herokuapp.com/';
 const LOCAL_API = 'http://localhost:4000/';
 
 const API = axios.create({
-  baseURL: LOCAL_API,
+  baseURL: PROD_API,
 });
 
 export const Auth = {
@@ -28,7 +28,7 @@ export const Auth = {
     return data;
   },
   updateDatabase: async (params: databaseType) => {
-    const data = await API.post('http://localhost:4000/todos', { ...params });
+    const data = await API.post('/todos', { ...params });
     return data;
   },
 };
