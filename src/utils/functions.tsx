@@ -3,7 +3,7 @@ import { Card, TodoType } from 'global';
 import { Dispatch } from 'react';
 import { setCards } from 'src/redux/cardsSlice';
 
-import { Auth } from 'src/service/axios';
+import { Auth, Cards } from 'src/service/axios';
 
 import { toaster } from './toaster';
 
@@ -119,11 +119,8 @@ export const deleteTodo = (
   setTodos(() => todos.filter((todo) => todo.todo !== deleteTodo));
 };
 
-export const deleteCard = (
-  title: string,
-  cards: Card[],
-  dispatch: Dispatch<any>
-) => {
-  const x = [...cards].filter((card) => card.title !== title);
-  dispatch(setCards(x));
+export const deleteCard = async (cardId: string, dispatch: Dispatch<any>) => {
+  const result = await Cards.DELETE(cardId);
+  console.log({ result });
+  dispatch(setCards(result.data.cards));
 };

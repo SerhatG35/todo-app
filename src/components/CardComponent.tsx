@@ -29,6 +29,7 @@ import TodoEdit from './TodoEdit';
 type TodoProps = {
   setValid: React.Dispatch<React.SetStateAction<boolean>>;
   receivedTitle?: string | undefined;
+  receivedId: string;
   receivedTodos?: TodoType[];
   cards: Card[];
 };
@@ -37,6 +38,7 @@ const CardComponent = ({
   setValid,
   receivedTitle,
   receivedTodos,
+  receivedId,
   cards,
 }: TodoProps) => {
   const [title, setTitle] = useState<string | undefined>(undefined);
@@ -64,37 +66,37 @@ const CardComponent = ({
 
   return (
     <Flex
-      p='5'
+      p="5"
       w={['100%', '40%', '96']}
-      h='xs'
-      rounded='3xl'
+      h="xs"
+      rounded="3xl"
       m={['3', '3', '5']}
-      flexDir='column'
-      flexWrap='wrap'
-      boxShadow='lg'
-      position='relative'
+      flexDir="column"
+      flexWrap="wrap"
+      boxShadow="lg"
+      position="relative"
     >
       {title ? (
         <>
-          <Heading fontSize={['md', 'xl', '3xl']} textAlign='center'>
+          <Heading fontSize={['md', 'xl', '3xl']} textAlign="center">
             {title}
           </Heading>
-          <Flex fontSize={['xs', 'sm', 'lg']} flexDir='column' flexWrap='wrap'>
+          <Flex fontSize={['xs', 'sm', 'lg']} flexDir="column" flexWrap="wrap">
             {todos &&
               todos.map((todo, index) => {
                 return (
                   <Flex
                     key={index + 100}
-                    justify='space-between'
-                    align='center'
-                    mt='5'
+                    justify="space-between"
+                    align="center"
+                    mt="5"
                   >
-                    <Flex align='center'>
+                    <Flex align="center">
                       <Checkbox
                         isChecked={todo.isCompleted}
-                        mr='2'
-                        borderColor='darkgray'
-                        colorScheme='orange'
+                        mr="2"
+                        borderColor="darkgray"
+                        colorScheme="orange"
                         onChange={(e) => completeTodo(e, todo, todos, setTodos)}
                       />
                       <Text
@@ -113,16 +115,16 @@ const CardComponent = ({
                         setTodos={setTodos}
                       />
                       <IconButton
-                        variant='outline'
-                        ml='2'
+                        variant="outline"
+                        ml="2"
                         _focus={{ boxShadow: 'none' }}
                         _hover={{ backgroundColor: 'none', opacity: '0.4' }}
-                        colorScheme='red'
-                        size='xs'
-                        fontSize='2xl'
+                        colorScheme="red"
+                        size="xs"
+                        fontSize="2xl"
                         onClick={() => deleteTodo(todo.todo, setTodos, todos)}
                         icon={<TiDeleteOutline />}
-                        aria-label='delete todo'
+                        aria-label="delete todo"
                       />
                     </Center>
                   </Flex>
@@ -130,27 +132,27 @@ const CardComponent = ({
               })}
           </Flex>
           <IconButton
-            variant='outline'
+            variant="outline"
             _focus={{ boxShadow: 'none' }}
-            colorScheme='red'
-            fontSize='xl'
-            size='xs'
+            colorScheme="red"
+            fontSize="xl"
+            size="xs"
             icon={<BsTrash />}
-            position='absolute'
-            top='2'
-            right='2'
-            aria-label='delete card'
-            onClick={() => deleteCard(title, cards, dispatch)}
+            position="absolute"
+            top="2"
+            right="2"
+            aria-label="delete card"
+            onClick={() => deleteCard(receivedId, dispatch)}
           />
         </>
       ) : (
         <Flex>
-          <Input size='sm' ref={titleRef} placeholder='Add Todo Title' />
+          <Input size="sm" ref={titleRef} placeholder="Add Todo Title" />
           <IconButton
-            size='sm'
-            colorScheme='green'
-            ml='3'
-            aria-label='add title'
+            size="sm"
+            colorScheme="green"
+            ml="3"
+            aria-label="add title"
             onClick={() => {
               addTitleCard(cards, titleRef, setTitle);
             }}
@@ -160,17 +162,17 @@ const CardComponent = ({
       )}
 
       {title && todos.length < 5 && (
-        <Center mt='3'>
-          <Input size='sm' ref={todoRef} placeholder='Add Todo' />
+        <Center mt="3">
+          <Input size="sm" ref={todoRef} placeholder="Add Todo" />
           <IconButton
             _focus={{ boxShadow: 'none' }}
-            fontSize='xl'
-            size='sm'
-            colorScheme='green'
+            fontSize="xl"
+            size="sm"
+            colorScheme="green"
             onClick={() => addTodo(todos, todoRef, setTodos)}
-            aria-label='add todo'
+            aria-label="add todo"
             icon={<AiOutlineCheck />}
-            ml='3'
+            ml="3"
           />
         </Center>
       )}

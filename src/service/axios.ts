@@ -6,7 +6,7 @@ const PROD_API = 'https://my-todo-app-backend.herokuapp.com/';
 const LOCAL_API = 'http://localhost:4000/';
 
 const API = axios.create({
-  baseURL: PROD_API,
+  baseURL: process.env.NODE_ENV === 'development' ? LOCAL_API : PROD_API,
 });
 
 export const Auth = {
@@ -29,6 +29,13 @@ export const Auth = {
   },
   updateDatabase: async (params: databaseType) => {
     const data = await API.post('/todos', { ...params });
+    return data;
+  },
+};
+
+export const Cards = {
+  DELETE: async (id: string) => {
+    const data = await API.delete(`/todos/${id}`);
     return data;
   },
 };
