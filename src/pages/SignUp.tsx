@@ -8,16 +8,17 @@ import {
   Heading,
   FormErrorMessage,
 } from '@chakra-ui/react';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useState } from 'react';
-
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+
+import { toaster } from 'src/utils/toaster';
+import { Auth } from 'src/service/axios';
 import { ROUTES } from 'src/constants/routes';
 import { signUpSchema } from 'src/constants/YupSchema';
-import { Auth } from 'src/service/axios';
-import { toaster } from 'src/utils/toaster';
 
 type SignUpFormInputs = {
   firstname: string;

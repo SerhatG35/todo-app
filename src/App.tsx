@@ -23,8 +23,8 @@ function App() {
       <Router>
         <Suspense fallback={<Heading>Loading Please Wait..</Heading>}>
           <ChakraProvider theme={theme}>
-            <ColorModeButton />
-            <Center w='100%' h='100vh' fontFamily='Poppins'>
+            <Center position='relative' w='100%' h='100vh' fontFamily='Poppins'>
+              <ColorModeButton />
               <Switch>
                 <Route exact path={ROUTES.LOGIN} component={Login} />
                 <Route exact path={ROUTES.SIGNUP} component={SignUp} />

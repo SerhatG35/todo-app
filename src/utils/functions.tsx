@@ -21,10 +21,11 @@ export const addNewCard = (
 // --- FUNCTIONS FROM CARDCOMPONENT ---
 
 export const updateDatabase = async (cards: Card[], loggedUser: any) => {
+  const sortedCards = cards.filter((card) => card.title !== undefined);
   await Auth.updateDatabase({
     id: loggedUser.user.id,
     username: loggedUser?.user?.userName,
-    cards: cards,
+    cards: sortedCards,
   });
 };
 
@@ -123,9 +124,6 @@ export const deleteCard = (
   cards: Card[],
   dispatch: Dispatch<any>
 ) => {
-  console.log(title);
-  console.log(cards);
   const x = [...cards].filter((card) => card.title !== title);
-  console.log(x);
   dispatch(setCards(x));
 };

@@ -1,14 +1,16 @@
-import { Center, Flex, IconButton, Heading } from '@chakra-ui/react';
+import { Center, IconButton, Heading } from '@chakra-ui/react';
+import { GrAdd } from 'react-icons/gr';
+
 import { useContext, useEffect, useState } from 'react';
 
-import { GrAdd } from 'react-icons/gr';
 import { Auth } from 'src/service/axios';
 import { addNewCard, updateDatabase } from 'src/utils/functions';
+import CardComponent from './CardComponent';
+
+import UserContext from 'src/context/userContext';
 import { useDispatch } from 'react-redux';
 import { setCards } from 'src/redux/cardsSlice';
 import useCardState from 'src/hooks/useCardState';
-import CardComponent from './CardComponent';
-import UserContext from 'src/context/userContext';
 
 const CardContainer = () => {
   const dispatch = useDispatch();
@@ -18,7 +20,6 @@ const CardContainer = () => {
 
   const getAllCards = async () => {
     const { cards: receivedCards } = await Auth.getCards();
-    console.log(receivedCards);
     if (receivedCards) {
       dispatch(setCards(receivedCards));
     }
@@ -29,12 +30,18 @@ const CardContainer = () => {
   }, []);
 
   useEffect(() => {
-    console.log(cards);
-    updateDatabase(cards, loggedUser);
+    // updateDatabase(cards, loggedUser);
   }, [cards]);
 
   return (
-    <Flex py='10' px='5' w='85%' h='100%' d='flex' flexWrap='wrap'>
+    <Center
+      py='7'
+      px='5'
+      w={['100%', '100%', '85%']}
+      h='100%'
+      d='flex'
+      flexWrap='wrap'
+    >
       {cards.map((card, i) => {
         return (
           <CardComponent
@@ -50,27 +57,26 @@ const CardContainer = () => {
         d='flex'
         flexDir='column'
         boxShadow='lg'
-        w='sm'
+        w={['100%', '40%', '96']}
         h='xs'
+        m={['3', '3', '5']}
         rounded='3xl'
-        ml='10'
-        mb='10'
       >
         <Heading textAlign='center' size='md' userSelect='none'>
           Add New Todo Card
         </Heading>
         <IconButton
-          size='sm'
+          size='xs'
           _focus={{ boxShadow: 'none' }}
           mt='5'
           colorScheme='blue'
-          fontSize='2xl'
+          fontSize='xl'
           icon={<GrAdd />}
           aria-label='add new todo card'
           onClick={() => addNewCard(cards, valid, dispatch)}
         />
       </Center>
-    </Flex>
+    </Center>
   );
 };
 

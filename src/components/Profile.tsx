@@ -14,29 +14,45 @@ const Profile = () => {
   const fontColor = useColorModeValue('#EBEBEB', '#ADCAD7');
   const hoverColor = useColorModeValue('#ADCAD7', '#EBEBEB');
 
+  const logout = () => {
+    localStorage.removeItem('login');
+    window.dispatchEvent(new Event('storage'));
+    history.push('/');
+  };
+
   return (
-    <Flex flexDir='column' w='15%' h='100%' position='relative' boxShadow='lg'>
-      <Center mt='2rem' d='flex' justifyContent='space-evenly' flexDir='column'>
+    <Flex
+      flexDir={['column']}
+      w={['100%', '100%', '15%']}
+      h={['20%', '20%', '100%']}
+      position='relative'
+      boxShadow='lg'
+    >
+      <Center
+        mt={['0.5em', '0.5em', '2rem']}
+        d='flex'
+        justifyContent='space-evenly'
+        flexDir='column'
+      >
         <Avatar size='lg' userSelect='none' />
-        <Heading>
+        <Heading textAlign='center' fontSize={['xl', '2xl', '3xl']}>
           {JSON.parse(localStorage.getItem('login') || '{}').userName}
         </Heading>
       </Center>
       <Button
-        size='sm'
+        size='xs'
+        zIndex='10'
+        fontSize='sm'
         position='absolute'
-        left='5'
-        bottom='5'
+        left={['3', '5', '5']}
+        bottom={['3', '5', '5']}
+        top={['3', '5', 'unset']}
         bgColor='#505153'
         fontWeight='500'
         rounded='xl'
         color={fontColor}
         _hover={{ color: hoverColor }}
-        onClick={() => {
-          localStorage.removeItem('login');
-          window.dispatchEvent(new Event('storage'));
-          history.push('/');
-        }}
+        onClick={logout}
       >
         Logout
       </Button>

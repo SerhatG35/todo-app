@@ -1,4 +1,5 @@
 import { User } from 'global';
+
 import { createContext } from 'react';
 
 type ContextType = {

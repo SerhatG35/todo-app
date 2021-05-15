@@ -13,9 +13,8 @@ import { BsTrash } from 'react-icons/bs';
 
 import { Card, TodoType } from 'global';
 
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import UserContext from 'src/context/userContext';
 
 import {
   addTitleCard,
@@ -24,7 +23,6 @@ import {
   deleteCard,
   deleteTodo,
   updateCards,
-  updateDatabase,
 } from 'src/utils/functions';
 import TodoEdit from './TodoEdit';
 
@@ -46,7 +44,6 @@ const CardComponent = ({
   const titleRef = useRef<HTMLInputElement>(null);
   const todoRef = useRef<HTMLInputElement>(null);
 
-  const loggedUser = useContext(UserContext);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -68,11 +65,10 @@ const CardComponent = ({
   return (
     <Flex
       p='5'
-      w='sm'
+      w={['100%', '40%', '96']}
       h='xs'
       rounded='3xl'
-      ml='10'
-      mb='10'
+      m={['3', '3', '5']}
       flexDir='column'
       flexWrap='wrap'
       boxShadow='lg'
@@ -80,8 +76,10 @@ const CardComponent = ({
     >
       {title ? (
         <>
-          <Heading textAlign='center'>{title}</Heading>
-          <Flex flexDir='column' flexWrap='wrap'>
+          <Heading fontSize={['md', 'xl', '3xl']} textAlign='center'>
+            {title}
+          </Heading>
+          <Flex fontSize={['xs', 'sm', 'lg']} flexDir='column' flexWrap='wrap'>
             {todos &&
               todos.map((todo, index) => {
                 return (
@@ -108,8 +106,14 @@ const CardComponent = ({
                       </Text>
                     </Flex>
                     <Center>
-                      <TodoEdit todo={todo.todo} todos={todos} index={index}setTodos={setTodos}/>
+                      <TodoEdit
+                        todo={todo.todo}
+                        todos={todos}
+                        index={index}
+                        setTodos={setTodos}
+                      />
                       <IconButton
+                        variant='outline'
                         ml='2'
                         _focus={{ boxShadow: 'none' }}
                         _hover={{ backgroundColor: 'none', opacity: '0.4' }}
@@ -126,6 +130,7 @@ const CardComponent = ({
               })}
           </Flex>
           <IconButton
+            variant='outline'
             _focus={{ boxShadow: 'none' }}
             colorScheme='red'
             fontSize='xl'
@@ -158,6 +163,8 @@ const CardComponent = ({
         <Center mt='3'>
           <Input size='sm' ref={todoRef} placeholder='Add Todo' />
           <IconButton
+            _focus={{ boxShadow: 'none' }}
+            fontSize='xl'
             size='sm'
             colorScheme='green'
             onClick={() => addTodo(todos, todoRef, setTodos)}
