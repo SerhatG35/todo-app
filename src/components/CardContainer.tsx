@@ -30,17 +30,17 @@ const CardContainer = () => {
   }, []);
 
   useEffect(() => {
-    // updateDatabase(cards, loggedUser);
+    updateDatabase(cards, loggedUser);
   }, [cards]);
 
   return (
     <Center
-      py='7'
-      px='5'
+      py="7"
+      px="5"
       w={['100%', '100%', '85%']}
-      h='100%'
-      d='flex'
-      flexWrap='wrap'
+      h="100%"
+      d="flex"
+      flexWrap="wrap"
     >
       {cards.map((card, i) => {
         return (
@@ -48,31 +48,32 @@ const CardContainer = () => {
             key={i}
             receivedTitle={card.title}
             receivedTodos={card.todos}
+            receivedId={card._id || ''}
             setValid={setValid}
             cards={cards}
           />
         );
       })}
       <Center
-        d='flex'
-        flexDir='column'
-        boxShadow='lg'
+        d="flex"
+        flexDir="column"
+        boxShadow="lg"
         w={['100%', '40%', '96']}
-        h='xs'
+        h="xs"
         m={['3', '3', '5']}
-        rounded='3xl'
+        rounded="3xl"
       >
-        <Heading textAlign='center' size='md' userSelect='none'>
+        <Heading textAlign="center" size="md" userSelect="none">
           Add New Todo Card
         </Heading>
         <IconButton
-          size='xs'
+          size="xs"
           _focus={{ boxShadow: 'none' }}
-          mt='5'
-          colorScheme='blue'
-          fontSize='xl'
+          mt="5"
+          colorScheme="blue"
+          fontSize="xl"
           icon={<GrAdd />}
-          aria-label='add new todo card'
+          aria-label="add new todo card"
           onClick={() => addNewCard(cards, valid, dispatch)}
         />
       </Center>
