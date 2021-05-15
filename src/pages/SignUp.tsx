@@ -46,7 +46,7 @@ const SignUp = () => {
   const onSubmit = async (values: SignUpFormInputs) => {
     setIsLoading(true);
     try {
-      const data = await Auth.register({
+      const data = await Auth.REGISTER({
         firstname: values.firstname,
         username: values.username,
         email: values.email,

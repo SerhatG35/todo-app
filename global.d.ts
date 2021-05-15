@@ -34,3 +34,9 @@ export type databaseType = {
   username: string;
   cards: Card[];
 };
+
+export type UpdateTypes = {
+  id: string;
+  username: string;
+  cards: Card[];
+};

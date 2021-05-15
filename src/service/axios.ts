@@ -1,6 +1,12 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { databaseType, loginTypes, registerTypes, User } from 'global';
+import {
+  databaseType,
+  loginTypes,
+  registerTypes,
+  UpdateTypes,
+  User,
+} from 'global';
 
 const PROD_API = 'https://my-todo-app-backend.herokuapp.com/';
 const LOCAL_API = 'http://localhost:4000/';
@@ -10,32 +16,32 @@ const API = axios.create({
 });
 
 export const Auth = {
-  login: async (params: loginTypes) => {
+  LOGIN: async (params: loginTypes) => {
     const { data } = await API.post<User>('/login', { ...params });
     API.interceptors.request.use((config) => injectToken(config, data?.token));
     localStorage.setItem('login', JSON.stringify(data));
     window.dispatchEvent(new Event('storage'));
     return data;
   },
-  register: async (params: registerTypes) => {
+  REGISTER: async (params: registerTypes) => {
     const result = await API.post('/register', { ...params });
     return result;
-  },
-  getCards: async () => {
-    const login: User = JSON.parse(localStorage.getItem('login') || '{}');
-    API.interceptors.request.use((config) => injectToken(config, login?.token));
-    const { data } = await API.get<databaseType>('/todos');
-    return data;
-  },
-  updateDatabase: async (params: databaseType) => {
-    const data = await API.post('/todos', { ...params });
-    return data;
   },
 };
 
 export const Cards = {
   DELETE: async (id: string) => {
     const data = await API.delete(`/todos/${id}`);
+    return data;
+  },
+  UPDATE: async (params: UpdateTypes) => {
+    const data = await API.post('/todos', { ...params });
+    return data;
+  },
+  GET: async () => {
+    const login: User = JSON.parse(localStorage.getItem('login') || '{}');
+    API.interceptors.request.use((config) => injectToken(config, login?.token));
+    const { data } = await API.get<databaseType>('/todos');
     return data;
   },
 };

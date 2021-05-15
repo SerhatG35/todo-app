@@ -3,7 +3,7 @@ import { User } from 'global';
 import { createContext } from 'react';
 
 type ContextType = {
-  user: User | null;
+  user: User;
 };
 
 const UserContext = createContext<ContextType | null>(null);

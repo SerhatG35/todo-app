@@ -48,7 +48,7 @@ const Login = () => {
   const onSubmit = async (values: LoginFormInputs) => {
     setIsLoading(true);
     try {
-      const data = await Auth.login({
+      const data = await Auth.LOGIN({
         auth: {
           username: values.username,
           password: values.password,
@@ -59,6 +59,7 @@ const Login = () => {
         toaster('Success', `Welcome ${data.userName}`, 'success');
       }
     } catch (error) {
+      console.log(error.response);
       toaster('Success', error.response.data, 'error');
       setIsLoading(false);
     }
