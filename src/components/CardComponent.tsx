@@ -7,10 +7,12 @@ import {
   Editable,
   EditablePreview,
   EditableInput,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { TiDeleteOutline } from 'react-icons/ti';
 import { BsTrash } from 'react-icons/bs';
+import { MdDragHandle } from 'react-icons/md';
 
 import { TodoType } from 'global';
 
@@ -25,22 +27,26 @@ import {
   changeTodo,
   deleteTodo,
 } from 'src/service/functions';
+import { DraggableProvidedDragHandleProps } from 'react-beautiful-dnd';
 
 type TodoProps = {
   setValid: React.Dispatch<React.SetStateAction<boolean>>;
   receivedTitle?: string | undefined;
   receivedTodos?: TodoType[];
+  cardDragHandle: DraggableProvidedDragHandleProps | undefined;
 };
 
 const CardComponent = ({
   setValid,
   receivedTitle,
   receivedTodos,
+  cardDragHandle,
 }: TodoProps) => {
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [todos, setTodos] = useState<TodoType[]>([]);
   const titleRef = useRef<HTMLInputElement>(null);
   const todoRef = useRef<HTMLInputElement>(null);
+  const handleColor = useColorModeValue('#505153', '#EBEBEB');
 
   const cards = useAppSelector((state) => state.cardsSlice.userCards);
   const dispatch = useAppDispatch();
@@ -65,10 +71,10 @@ const CardComponent = ({
     <Flex
       p='5'
       pt='1'
-      w={['100%', '40%', '96']}
-      h='xs'
+      w='100%'
+      // h='xs'
+      h={['xs', 'md', 'xs']}
       rounded='3xl'
-      m={['3', '3', '5']}
       flexDir='column'
       flexWrap='wrap'
       boxShadow='lg'
@@ -85,7 +91,7 @@ const CardComponent = ({
             textAlign='center'
             defaultValue={title}
           >
-            <EditablePreview p='0' />
+            <EditablePreview p='0' overflowWrap='anywhere' />
             <EditableInput
               onBlur={(e) =>
                 dispatch(changeTitle(cards, title, e.target.value))
@@ -172,6 +178,18 @@ const CardComponent = ({
             right='2'
             aria-label='delete card'
             onClick={() => dispatch(deleteCard(title))}
+          />
+          <IconButton
+            variant='outline'
+            position='absolute'
+            color={handleColor}
+            fontSize='xl'
+            size='xs'
+            top='2'
+            left='2'
+            aria-label='card handle'
+            {...cardDragHandle}
+            icon={<MdDragHandle />}
           />
         </>
       ) : (

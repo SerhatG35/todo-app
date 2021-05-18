@@ -1,4 +1,4 @@
-import { Center, IconButton, Heading, Skeleton } from '@chakra-ui/react';
+import { Center, IconButton, Heading, Flex, Skeleton } from '@chakra-ui/react';
 import { GrAdd } from 'react-icons/gr';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -53,17 +53,17 @@ const CardContainer = () => {
   return (
     <Center
       py='7'
-      px='5'
+      px='3'
       w={['100%', '100%', '85%']}
       h='100%'
       d='flex'
       flexWrap='wrap'
+      overflowX='hidden'
     >
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId='cards' direction='horizontal'>
           {(provided) => (
             <Center
-              maxW='%95'
               flexWrap='wrap'
               {...provided.droppableProps}
               ref={provided.innerRef}
@@ -76,25 +76,24 @@ const CardContainer = () => {
                     index={i}
                   >
                     {(provided) => (
-                      <Center
+                      <Skeleton
+                        startColor='#ADCAD7'
+                        endColor='#EBEBEB'
+                        rounded='3xl'
+                        isLoaded={!loading}
+                        w={['100%', '43%', '96']}
+                        m={['3', '3', '5']}
+                        h={['xs', 'md', 'xs']}
                         {...provided.draggableProps}
-                        {...provided.dragHandleProps}
                         ref={provided.innerRef}
                       >
-                        <Skeleton
-                          startColor='#ADCAD7'
-                          endColor='#EBEBEB'
-                          rounded='3xl'
-                          isLoaded={!loading}
-                        >
-                          <CardComponent
-                            key={card._id || i}
-                            receivedTitle={card.title}
-                            receivedTodos={card.todos}
-                            setValid={setValid}
-                          />
-                        </Skeleton>
-                      </Center>
+                        <CardComponent
+                          cardDragHandle={provided.dragHandleProps}
+                          receivedTitle={card.title}
+                          receivedTodos={card.todos}
+                          setValid={setValid}
+                        />
+                      </Skeleton>
                     )}
                   </Draggable>
                 );

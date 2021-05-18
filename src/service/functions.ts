@@ -29,8 +29,10 @@ export const addTodo = (
 ) => {
   const newTodos: TodoType[] = [...todos];
   if (todoRef.current && todoRef.current?.value !== '') {
-    if (todoRef.current?.value.length > 40)
-      toaster('', 'Maximum 40 character is allowed', 'warning');
+    if (todoRef.current?.value.length > 40) {
+      todoRef.current.value = '';
+      return toaster('', 'Maximum 40 character is allowed', 'warning');
+    }
 
     const todoExists = todos.find(
       (todo) => todo.todo === todoRef.current?.value
