@@ -72,7 +72,6 @@ const CardComponent = ({
       p='5'
       pt='1'
       w='100%'
-      // h='xs'
       h={['xs', 'md', 'xs']}
       rounded='3xl'
       flexDir='column'

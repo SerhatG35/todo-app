@@ -1,4 +1,4 @@
-import { Center, IconButton, Heading, Flex, Skeleton } from '@chakra-ui/react';
+import { Center, IconButton, Heading, Skeleton } from '@chakra-ui/react';
 import { GrAdd } from 'react-icons/gr';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
