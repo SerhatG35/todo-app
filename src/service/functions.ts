@@ -29,9 +29,13 @@ export const addTodo = (
 ) => {
   const newTodos: TodoType[] = [...todos];
   if (todoRef.current && todoRef.current?.value !== '') {
+    if (todoRef.current?.value.length > 40)
+      toaster('', 'Maximum 40 character is allowed', 'warning');
+
     const todoExists = todos.find(
       (todo) => todo.todo === todoRef.current?.value
     );
+
     if (!todoExists) {
       newTodos.push({ todo: todoRef.current?.value, isCompleted: false });
       setTodos(newTodos);
@@ -58,6 +62,23 @@ export const completeTodo = (
     }
   });
   setTodos(completedChange);
+};
+
+export const changeTodo = (
+  todos: TodoType[],
+  index: number,
+  setTodos: React.Dispatch<React.SetStateAction<TodoType[]>>,
+  changedTodo: string
+) => {
+  const newTodos = [...todos];
+  newTodos.forEach((changeTodo, i) => {
+    if (i === index) {
+      const updatedTodo = { ...changeTodo };
+      updatedTodo.todo = changedTodo;
+      newTodos[i] = updatedTodo;
+    }
+  });
+  setTodos(newTodos);
 };
 
 export const addTitleCard = (

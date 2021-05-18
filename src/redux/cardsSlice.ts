@@ -33,8 +33,8 @@ export const updateCards = (
   return async (dispatch: AppDispatch) => {
     if (title) {
       const newCardState = [...cards];
-      const cardExists = newCardState.find((card) => card.title === title);
-      if (cardExists) {
+      const cardTitleExists = newCardState.find((card) => card.title === title);
+      if (cardTitleExists) {
         newCardState.forEach((card, index) => {
           if (card.title === title) {
             const todoToUpdate = { ...card };
@@ -58,6 +58,25 @@ export const updateCards = (
   };
 };
 
+export const changeTitle =
+  (cards: Card[], previousTitle: string, changedTitle: string) =>
+  async (dispatch: AppDispatch) => {
+    const newCardState = [...cards];
+    const cardTitleExists = newCardState.find(
+      (card) => card.title === changedTitle
+    );
+    if (!cardTitleExists) {
+      newCardState.forEach((card, index) => {
+        if (card.title === previousTitle) {
+          const titleUpdate = { ...card };
+          titleUpdate.title = changedTitle;
+          newCardState[index] = titleUpdate;
+        }
+      });
+      dispatch(setCards(newCardState));
+    } else toaster('Title Exists', '', 'warning');
+  };
+
 export const addNewCard =
   (cards: Card[], valid: boolean) => async (dispatch: AppDispatch) => {
     console.log({ cards: cards, valid: valid });
@@ -65,9 +84,25 @@ export const addNewCard =
     else toaster('Please fill the title', '', 'warning');
   };
 
-export const deleteCard = (cardId: string) => {
+export const deleteCard = (cardTitle: string) => {
   return async (dispatch: AppDispatch) => {
-    const result = await Cards.DELETE(cardId);
+    const result = await Cards.DELETE(cardTitle);
     dispatch(setCards(result.data.cards));
   };
 };
+
+export const reOrderCards =
+  (newCards: Card[]) => async (dispatch: AppDispatch) => {
+    dispatch(setCards(newCards));
+  };
+
+//clientta sadece cardda değişiklik olduğundan todoyu maplayan array bu değişimin farkında değil
+// export const deleteTodo = (
+//   title: string,
+//   todoToDelete: string,
+// ) => {
+//   return async (dispatch: AppDispatch) => {
+//     const result = await Todos.DELETE(title, todoToDelete);
+//     dispatch(setCards(result.data.cards));
+//   };
+// };

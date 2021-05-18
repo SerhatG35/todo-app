@@ -1,4 +1,4 @@
-import { Center, IconButton, Heading } from '@chakra-ui/react';
+import { Center, IconButton, Heading, Skeleton } from '@chakra-ui/react';
 import { GrAdd } from 'react-icons/gr';
 
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -7,12 +7,19 @@ import { Cards } from 'src/service/axios';
 import CardComponent from './CardComponent';
 
 import UserContext from 'src/context/userContext';
-import { addNewCard, setCards } from 'src/redux/cardsSlice';
+import { addNewCard, reOrderCards, setCards } from 'src/redux/cardsSlice';
 import { useAppDispatch, useAppSelector } from 'src/hooks/hooks';
 import { updateDatabase } from 'src/service/functions';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from 'react-beautiful-dnd';
 
 const CardContainer = () => {
   const [valid, setValid] = useState(true); // if the card has title
+  const [loading, setLoading] = useState(false);
 
   const loggedUser = useContext(UserContext);
 
@@ -20,14 +27,23 @@ const CardContainer = () => {
   const dispatch = useAppDispatch();
 
   const getAllCards = useCallback(async () => {
+    setLoading(true);
     const { cards: receivedCards } = await Cards.GET();
     if (receivedCards) dispatch(setCards(receivedCards));
+    setLoading(false);
   }, []);
+
+  const handleOnDragEnd = (result: DropResult) => {
+    const items = Array.from(cards);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    if (result.destination)
+      items.splice(result.destination.index, 0, reorderedItem);
+    dispatch(reOrderCards(items));
+  };
 
   useEffect(() => {
     getAllCards();
-  }, []);
-
+  }, [getAllCards]);
   useEffect(() => {
     console.log(cards);
     updateDatabase(cards, loggedUser?.user);
@@ -42,42 +58,75 @@ const CardContainer = () => {
       d='flex'
       flexWrap='wrap'
     >
-      {cards.map((card, i) => {
-        return (
-          <CardComponent
-            key={i}
-            receivedTitle={card.title}
-            receivedTodos={card.todos}
-            receivedId={card._id || ''}
-            setValid={setValid}
-          />
-        );
-      })}
-      <Center
-        d='flex'
-        flexDir='column'
-        boxShadow='lg'
-        w={['100%', '40%', '96']}
-        h='xs'
-        m={['3', '3', '5']}
-        rounded='3xl'
-      >
-        <Heading textAlign='center' size='md' userSelect='none'>
-          Add New Todo Card
-        </Heading>
-        <IconButton
-          size='xs'
-          _focus={{ boxShadow: 'none' }}
-          mt='5'
-          colorScheme='blue'
-          fontSize='xl'
-          icon={<GrAdd />}
-          aria-label='add new todo card'
-          onClick={() => {
-            dispatch(addNewCard(cards, valid));
-          }}
-        />
-      </Center>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId='cards' direction='horizontal'>
+          {(provided) => (
+            <Center
+              maxW='%95'
+              flexWrap='wrap'
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {cards.map((card, i) => {
+                return (
+                  <Draggable
+                    key={card._id}
+                    draggableId={'card-' + card._id}
+                    index={i}
+                  >
+                    {(provided) => (
+                      <Center
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                      >
+                        <Skeleton
+                          startColor='#ADCAD7'
+                          endColor='#EBEBEB'
+                          rounded='3xl'
+                          isLoaded={!loading}
+                        >
+                          <CardComponent
+                            key={card._id || i}
+                            receivedTitle={card.title}
+                            receivedTodos={card.todos}
+                            setValid={setValid}
+                          />
+                        </Skeleton>
+                      </Center>
+                    )}
+                  </Draggable>
+                );
+              })}
+              <Center
+                d='flex'
+                flexDir='column'
+                boxShadow='lg'
+                w={['100%', '40%', '96']}
+                h='xs'
+                m={['3', '3', '5']}
+                rounded='3xl'
+              >
+                <Heading textAlign='center' size='md' userSelect='none'>
+                  Add New Todo Card
+                </Heading>
+                <IconButton
+                  size='xs'
+                  _focus={{ boxShadow: 'none' }}
+                  mt='5'
+                  colorScheme='blue'
+                  fontSize='xl'
+                  icon={<GrAdd />}
+                  aria-label='add new todo card'
+                  onClick={() => {
+                    dispatch(addNewCard(cards, valid));
+                  }}
+                />
+              </Center>
+            </Center>
+          )}
+        </Droppable>
+      </DragDropContext>
     </Center>
   );
 };

@@ -30,21 +30,28 @@ export const Auth = {
 };
 
 export const Cards = {
-  DELETE: async (id: string) => {
-    const data = await API.delete(`/todos/${id}`);
+  DELETE: async (title: string) => {
+    const data = await API.delete(`/cards/${title}`);
     return data;
   },
   UPDATE: async (params: UpdateTypes) => {
-    const data = await API.post('/todos', { ...params });
+    const data = await API.post('/cards', { ...params });
     return data;
   },
   GET: async () => {
     const login: User = JSON.parse(localStorage.getItem('login') || '{}');
     API.interceptors.request.use((config) => injectToken(config, login?.token));
-    const { data } = await API.get<databaseType>('/todos');
+    const { data } = await API.get<databaseType>('/cards');
     return data;
   },
 };
+
+// export const Todos = {
+//   DELETE: async (title: string, todo: string) => {
+//     const data = await API.delete(`/todos/${title}/${todo}`);
+//     return data;
+//   },
+// };
 
 const injectToken = (config: AxiosRequestConfig, token: string | undefined) => {
   try {

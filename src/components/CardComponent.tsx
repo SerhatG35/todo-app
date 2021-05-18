@@ -1,11 +1,12 @@
 import {
   IconButton,
   Input,
-  Heading,
   Flex,
-  Text,
   Checkbox,
   Center,
+  Editable,
+  EditablePreview,
+  EditableInput,
 } from '@chakra-ui/react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { TiDeleteOutline } from 'react-icons/ti';
@@ -15,20 +16,19 @@ import { TodoType } from 'global';
 
 import { useEffect, useRef, useState } from 'react';
 
-import TodoEdit from './TodoEdit';
-import { deleteCard, updateCards } from 'src/redux/cardsSlice';
+import { changeTitle, deleteCard, updateCards } from 'src/redux/cardsSlice';
 import { useAppDispatch, useAppSelector } from 'src/hooks/hooks';
 import {
-  deleteTodo,
   addTodo,
   completeTodo,
   addTitleCard,
+  changeTodo,
+  deleteTodo,
 } from 'src/service/functions';
 
 type TodoProps = {
   setValid: React.Dispatch<React.SetStateAction<boolean>>;
   receivedTitle?: string | undefined;
-  receivedId: string;
   receivedTodos?: TodoType[];
 };
 
@@ -36,7 +36,6 @@ const CardComponent = ({
   setValid,
   receivedTitle,
   receivedTodos,
-  receivedId,
 }: TodoProps) => {
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [todos, setTodos] = useState<TodoType[]>([]);
@@ -65,6 +64,7 @@ const CardComponent = ({
   return (
     <Flex
       p='5'
+      pt='1'
       w={['100%', '40%', '96']}
       h='xs'
       rounded='3xl'
@@ -73,12 +73,31 @@ const CardComponent = ({
       flexWrap='wrap'
       boxShadow='lg'
       position='relative'
+      overflow='hidden'
     >
       {title ? (
         <>
-          <Heading fontSize={['md', 'xl', '3xl']} textAlign='center'>
-            {title}
-          </Heading>
+          <Editable
+            w='90%'
+            h='10'
+            alignSelf='center'
+            fontSize={['md', 'xl', '2xl']}
+            textAlign='center'
+            defaultValue={title}
+          >
+            <EditablePreview p='0' />
+            <EditableInput
+              onBlur={(e) =>
+                dispatch(changeTitle(cards, title, e.target.value))
+              }
+              onKeyDown={(e) => {
+                if (e.key === ('Enter' || 'NumpadEnter')) {
+                  dispatch(changeTitle(cards, title, e.currentTarget.value));
+                }
+              }}
+              placeholder='Add Todo Title'
+            />
+          </Editable>
           <Flex fontSize={['xs', 'sm', 'lg']} flexDir='column' flexWrap='wrap'>
             {todos &&
               todos.map((todo, index) => {
@@ -97,21 +116,33 @@ const CardComponent = ({
                         colorScheme='orange'
                         onChange={(e) => completeTodo(e, todo, todos, setTodos)}
                       />
-                      <Text
-                        textDecoration={
-                          todo.isCompleted ? 'line-through' : 'none'
-                        }
-                      >
-                        {todo.todo}
-                      </Text>
+                      <Editable defaultValue={todo.todo}>
+                        <EditablePreview
+                          overflowWrap='anywhere'
+                          fontSize={['sm']}
+                          textDecoration={
+                            todo.isCompleted ? 'line-through' : 'none'
+                          }
+                        />
+                        <EditableInput
+                          onBlur={(e) =>
+                            changeTodo(todos, index, setTodos, e.target.value)
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === ('Enter' || 'NumpadEnter')) {
+                              changeTodo(
+                                todos,
+                                index,
+                                setTodos,
+                                e.currentTarget.value
+                              );
+                            }
+                          }}
+                          placeholder='Add Todo Title'
+                        />
+                      </Editable>
                     </Flex>
                     <Center>
-                      <TodoEdit
-                        todo={todo.todo}
-                        todos={todos}
-                        index={index}
-                        setTodos={setTodos}
-                      />
                       <IconButton
                         variant='outline'
                         ml='2'
@@ -140,12 +171,20 @@ const CardComponent = ({
             top='2'
             right='2'
             aria-label='delete card'
-            onClick={() => dispatch(deleteCard(receivedId))}
+            onClick={() => dispatch(deleteCard(title))}
           />
         </>
       ) : (
         <Flex>
-          <Input size='sm' ref={titleRef} placeholder='Add Todo Title' />
+          <Input
+            onKeyDown={(e) => {
+              if (e.key === ('Enter' || 'NumpadEnter'))
+                addTitleCard(cards, titleRef, setTitle);
+            }}
+            size='sm'
+            ref={titleRef}
+            placeholder='Add Todo Title'
+          />
           <IconButton
             size='sm'
             colorScheme='green'
@@ -161,7 +200,15 @@ const CardComponent = ({
 
       {title && todos.length < 5 && (
         <Center mt='3'>
-          <Input size='sm' ref={todoRef} placeholder='Add Todo' />
+          <Input
+            size='sm'
+            onKeyDown={(e) => {
+              if (e.key === ('Enter' || 'NumpadEnter'))
+                addTodo(todos, todoRef, setTodos);
+            }}
+            ref={todoRef}
+            placeholder='Add Todo'
+          />
           <IconButton
             _focus={{ boxShadow: 'none' }}
             fontSize='xl'
