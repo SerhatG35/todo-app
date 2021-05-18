@@ -34,6 +34,7 @@ const CardContainer = () => {
   }, []);
 
   const handleOnDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
     const items = Array.from(cards);
     const [reorderedItem] = items.splice(result.source.index, 1);
     if (result.destination)
