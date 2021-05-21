@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 
 import { useHistory } from 'react-router-dom';
+import Menu from './Menu';
 
 const Profile = () => {
   const history = useHistory();
@@ -39,7 +40,13 @@ const Profile = () => {
           {JSON.parse(localStorage.getItem('login') || '{}').userName}
         </Heading>
       </Center>
+      <Menu />
       <Button
+        sx={{
+          '@media screen and (max-width: 768px)': {
+            display: 'none',
+          },
+        }}
         size='xs'
         zIndex='10'
         fontSize='sm'

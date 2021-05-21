@@ -9,7 +9,12 @@ const ColorModeButton = () => {
 
   return (
     <IconButton
-      zIndex='10'
+      sx={{
+        '@media screen and (max-width: 768px)': {
+          display: 'none',
+        },
+      }}
+      zIndex='1000'
       aria-label='color mode'
       position='absolute'
       right='3'

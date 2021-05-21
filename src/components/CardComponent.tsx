@@ -7,12 +7,13 @@ import {
   Editable,
   EditablePreview,
   EditableInput,
-  useColorModeValue,
+  Tag,
+  TagLabel,
+  TagRightIcon,
 } from '@chakra-ui/react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { TiDeleteOutline } from 'react-icons/ti';
-import { BsTrash } from 'react-icons/bs';
-import { MdDragHandle } from 'react-icons/md';
+import { BsTrash, BsCardChecklist } from 'react-icons/bs';
 
 import { TodoType } from 'global';
 
@@ -27,26 +28,24 @@ import {
   changeTodo,
   deleteTodo,
 } from 'src/service/functions';
-import { DraggableProvidedDragHandleProps } from 'react-beautiful-dnd';
 
 type TodoProps = {
   setValid: React.Dispatch<React.SetStateAction<boolean>>;
   receivedTitle?: string | undefined;
   receivedTodos?: TodoType[];
-  cardDragHandle: DraggableProvidedDragHandleProps | undefined;
+  category: string;
 };
 
 const CardComponent = ({
   setValid,
   receivedTitle,
   receivedTodos,
-  cardDragHandle,
+  category,
 }: TodoProps) => {
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [todos, setTodos] = useState<TodoType[]>([]);
   const titleRef = useRef<HTMLInputElement>(null);
   const todoRef = useRef<HTMLInputElement>(null);
-  const handleColor = useColorModeValue('#505153', '#EBEBEB');
 
   const cards = useAppSelector((state) => state.cardsSlice.userCards);
   const dispatch = useAppDispatch();
@@ -60,7 +59,7 @@ const CardComponent = ({
       setTitle(receivedTitle);
       setTodos(receivedTodos);
     }
-  }, []);
+  }, [receivedTitle, receivedTodos]);
 
   useEffect(() => {
     if (title) setValid(true);
@@ -178,18 +177,23 @@ const CardComponent = ({
             aria-label='delete card'
             onClick={() => dispatch(deleteCard(title))}
           />
-          <IconButton
-            variant='outline'
+
+          <Tag
+            letterSpacing='widest'
+            userSelect='none'
             position='absolute'
-            color={handleColor}
-            fontSize='xl'
-            size='xs'
-            top='2'
-            left='2'
-            aria-label='card handle'
-            {...cardDragHandle}
-            icon={<MdDragHandle />}
-          />
+            w="full"
+            pl="5"
+            rounded="none"
+            left='0'
+            bottom='0'
+            colorScheme={category.split(' ')[0]}
+            size='sm'
+            fontSize='xx-small'
+          >
+            <TagLabel>{category.split(' ')[2].toUpperCase()}</TagLabel>
+            <TagRightIcon fontSize='lg' as={BsCardChecklist} />
+          </Tag>
         </>
       ) : (
         <Flex>

@@ -78,9 +78,26 @@ export const changeTitle =
   };
 
 export const addNewCard =
-  (cards: Card[], valid: boolean) => async (dispatch: AppDispatch) => {
-    console.log({ cards: cards, valid: valid });
-    if (valid) dispatch(setCards([...cards, { title: undefined, todos: [] }]));
+  (
+    cards: Card[],
+    valid: boolean,
+    categoryRef: React.RefObject<HTMLSelectElement>
+  ) =>
+  async (dispatch: AppDispatch) => {
+    if (valid && categoryRef.current?.value) {
+      dispatch(
+        setCards([
+          ...cards,
+          {
+            title: undefined,
+            todos: [],
+            category: categoryRef.current.value,
+          },
+        ])
+      );
+      categoryRef.current.selectedIndex = 0;
+    } else if (!categoryRef.current?.value)
+      toaster('Please select a category', '', 'warning');
     else toaster('Please fill the title', '', 'warning');
   };
 
@@ -91,7 +108,7 @@ export const deleteCard = (cardTitle: string) => {
   };
 };
 
-export const reOrderCards =
+export const reOrderCards =  //drag and drop
   (newCards: Card[]) => async (dispatch: AppDispatch) => {
     dispatch(setCards(newCards));
   };

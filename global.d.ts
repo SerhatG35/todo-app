@@ -13,6 +13,7 @@ export type Card = {
   _id?: string;
   title: string | undefined;
   todos: TodoType[];
+  category: string;
 };
 
 export type loginTypes = {

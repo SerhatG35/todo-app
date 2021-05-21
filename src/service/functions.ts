@@ -88,9 +88,14 @@ export const addTitleCard = (
   titleRef: React.RefObject<HTMLInputElement>,
   setTitle: React.Dispatch<React.SetStateAction<string | undefined>>
 ) => {
-  const titleExists = cards?.find(
-    (card) => card.title === titleRef.current?.value
-  );
-  if (!titleExists) setTitle(titleRef.current?.value);
-  else toaster('Title Exists', '', 'warning');
+  const enteredTitle = titleRef.current?.value;
+  if (titleRef.current && titleRef.current?.value !== '') {
+    if (titleRef.current.value.length > 30) {
+      titleRef.current.value = '';
+      return toaster('', 'Maximum 30 character is allowed', 'warning');
+    }
+    const titleExists = cards?.find((card) => card.title === enteredTitle);
+    if (!titleExists) setTitle(titleRef.current?.value);
+    else toaster('Title Exists', '', 'warning');
+  }
 };
