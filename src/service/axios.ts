@@ -46,12 +46,12 @@ export const Cards = {
   },
 };
 
-// export const Todos = {
-//   DELETE: async (title: string, todo: string) => {
-//     const data = await API.delete(`/todos/${title}/${todo}`);
-//     return data;
-//   },
-// };
+export const Todos = {
+  DELETE: async (title: string, todo: string) => {
+    const data = await API.delete(`/todos/${title}/${todo}`);
+    return data;
+  },
+};
 
 const injectToken = (config: AxiosRequestConfig, token: string | undefined) => {
   try {

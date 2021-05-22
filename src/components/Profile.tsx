@@ -26,17 +26,21 @@ const Profile = () => {
       flexDir={['column']}
       w={['100%', '100%', '15%']}
       h={['20%', '20%', '100%']}
-      position='relative'
-      boxShadow='lg'
+      position="relative"
+      boxShadow="lg"
     >
       <Center
         mt={['0.5em', '0.5em', '2rem']}
-        d='flex'
-        justifyContent='space-evenly'
-        flexDir='column'
+        d="flex"
+        justifyContent="space-evenly"
+        flexDir="column"
       >
-        <Avatar size='lg' userSelect='none' />
-        <Heading textAlign='center' fontSize={['xl', '2xl', '3xl']}>
+        <Avatar size="lg" userSelect="none" />
+        <Heading
+          textAlign="center"
+          fontSize={['xl', '2xl', '3xl']}
+          data-testid="loggedin-username"
+        >
           {JSON.parse(localStorage.getItem('login') || '{}').userName}
         </Heading>
       </Center>
@@ -47,16 +51,16 @@ const Profile = () => {
             display: 'none',
           },
         }}
-        size='xs'
-        zIndex='10'
-        fontSize='sm'
-        position='absolute'
+        size="xs"
+        zIndex="10"
+        fontSize="sm"
+        position="absolute"
         left={['3', '5', '5']}
         bottom={['3', '5', '5']}
         top={['3', '5', 'unset']}
-        bgColor='#505153'
-        fontWeight='500'
-        rounded='xl'
+        bgColor="#505153"
+        fontWeight="500"
+        rounded="xl"
         color={fontColor}
         _hover={{ color: hoverColor }}
         onClick={logout}

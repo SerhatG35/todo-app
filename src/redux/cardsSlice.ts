@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Card, TodoType } from 'global';
-import { Cards } from 'src/service/axios';
+import { Cards, Todos } from 'src/service/axios';
 import { toaster } from 'src/utils/toaster';
 import { AppDispatch } from './store';
 
@@ -114,12 +114,10 @@ export const reOrderCards =  //drag and drop
   };
 
 //clientta sadece cardda değişiklik olduğundan todoyu maplayan array bu değişimin farkında değil
-// export const deleteTodo = (
-//   title: string,
-//   todoToDelete: string,
-// ) => {
-//   return async (dispatch: AppDispatch) => {
-//     const result = await Todos.DELETE(title, todoToDelete);
-//     dispatch(setCards(result.data.cards));
-//   };
-// };
+export const deleteTodo = (title: string, todoToDelete: string) => {
+  return async (dispatch: AppDispatch) => {
+    console.log({ title, todoToDelete });
+    const result = await Todos.DELETE(title, todoToDelete);
+    dispatch(setCards(result.data.cards));
+  };
+};
