@@ -6,11 +6,15 @@ import {
   useColorModeValue,
   Heading,
 } from '@chakra-ui/react';
+import { useContext } from 'react';
 
 import { useHistory } from 'react-router-dom';
+import UserContext from 'src/context/userContext';
 import Menu from './Menu';
+import OrderButton from './OrderButton';
 
 const Profile = () => {
+  const loggedUser = useContext(UserContext);
   const history = useHistory();
   const fontColor = useColorModeValue('#EBEBEB', '#ADCAD7');
   const hoverColor = useColorModeValue('#ADCAD7', '#EBEBEB');
@@ -26,23 +30,24 @@ const Profile = () => {
       flexDir={['column']}
       w={['100%', '100%', '15%']}
       h={['20%', '20%', '100%']}
-      position="relative"
-      boxShadow="lg"
+      position='relative'
+      boxShadow='lg'
     >
       <Center
         mt={['0.5em', '0.5em', '2rem']}
-        d="flex"
-        justifyContent="space-evenly"
-        flexDir="column"
+        d='flex'
+        justifyContent='space-evenly'
+        flexDir='column'
       >
-        <Avatar size="lg" userSelect="none" />
+        <Avatar size='lg' userSelect='none' />
         <Heading
-          textAlign="center"
+          textAlign='center'
           fontSize={['xl', '2xl', '3xl']}
-          data-testid="loggedin-username"
+          data-testid='loggedin-username'
         >
-          {JSON.parse(localStorage.getItem('login') || '{}').userName}
+          {loggedUser?.user?.userName}
         </Heading>
+        <OrderButton />
       </Center>
       <Menu />
       <Button
@@ -51,16 +56,16 @@ const Profile = () => {
             display: 'none',
           },
         }}
-        size="xs"
-        zIndex="10"
-        fontSize="sm"
-        position="absolute"
+        size='xs'
+        zIndex='10'
+        fontSize='sm'
+        position='absolute'
         left={['3', '5', '5']}
         bottom={['3', '5', '5']}
         top={['3', '5', 'unset']}
-        bgColor="#505153"
-        fontWeight="500"
-        rounded="xl"
+        bgColor='#505153'
+        fontWeight='500'
+        rounded='xl'
         color={fontColor}
         _hover={{ color: hoverColor }}
         onClick={logout}

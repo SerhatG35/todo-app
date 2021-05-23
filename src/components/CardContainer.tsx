@@ -58,8 +58,8 @@ const CardContainer = () => {
   useEffect(() => {
     getAllCards();
   }, [getAllCards]);
+
   useEffect(() => {
-    console.log(cards);
     updateDatabase(cards, loggedUser?.user);
   }, [cards]);
 

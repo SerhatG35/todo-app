@@ -1,15 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Card, TodoType } from 'global';
 import { Cards, Todos } from 'src/service/axios';
+import { orderCardsFunction } from 'src/service/functions';
 import { toaster } from 'src/utils/toaster';
 import { AppDispatch } from './store';
 
 interface cardsSliceInitial {
   userCards: Card[];
+  order: string | string[];
 }
 
 const initialState: cardsSliceInitial = {
   userCards: [],
+  order: 'none',
 };
 
 export const cardsSlice = createSlice({
@@ -19,22 +22,27 @@ export const cardsSlice = createSlice({
     setCards: (state, action: PayloadAction<Card[]>) => {
       state.userCards = action.payload;
     },
+    setCardOrder: (state, action: PayloadAction<string | string[]>) => {
+      state.order = action.payload;
+    },
   },
 });
 
-export const { setCards } = cardsSlice.actions;
+export const { setCards, setCardOrder } = cardsSlice.actions;
 export default cardsSlice.reducer;
 
 export const updateCards = (
   cards: Card[],
   title: string | undefined,
-  todos: TodoType[]
+  todos: TodoType[],
+  orderValue: string | string[]
 ) => {
   return async (dispatch: AppDispatch) => {
     if (title) {
       const newCardState = [...cards];
       const cardTitleExists = newCardState.find((card) => card.title === title);
       if (cardTitleExists) {
+        // this means user is trying to changing existing card
         newCardState.forEach((card, index) => {
           if (card.title === title) {
             const todoToUpdate = { ...card };
@@ -44,6 +52,7 @@ export const updateCards = (
         });
         dispatch(setCards(newCardState));
       } else {
+        // adding new card
         newCardState.forEach((card, index) => {
           if (card.title === undefined) {
             const cardToUpdate = { ...card };
@@ -52,7 +61,7 @@ export const updateCards = (
             newCardState[index] = cardToUpdate;
           }
         });
-        dispatch(setCards(newCardState));
+        dispatch(setCards(orderCardsFunction(orderValue, newCardState)));
       }
     }
   };
@@ -113,11 +122,22 @@ export const reOrderCards =  //drag and drop
     dispatch(setCards(newCards));
   };
 
-//clientta sadece cardda değişiklik olduğundan todoyu maplayan array bu değişimin farkında değil
 export const deleteTodo = (title: string, todoToDelete: string) => {
   return async (dispatch: AppDispatch) => {
-    console.log({ title, todoToDelete });
     const result = await Todos.DELETE(title, todoToDelete);
     dispatch(setCards(result.data.cards));
+  };
+};
+
+export const orderCards = ({
+  value,
+  cards,
+}: {
+  value: string | string[];
+  cards: Card[];
+}) => {
+  return async (dispatch: AppDispatch) => {
+    const result = orderCardsFunction(value, cards);
+    dispatch(setCards(result));
   };
 };

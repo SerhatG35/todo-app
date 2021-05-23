@@ -14,14 +14,6 @@ export const updateDatabase = async (
   });
 };
 
-export const deleteTodo = (
-  deleteTodo: string,
-  setTodos: React.Dispatch<React.SetStateAction<TodoType[]>>,
-  todos: TodoType[]
-) => {
-  setTodos(() => todos.filter((todo) => todo.todo !== deleteTodo));
-};
-
 export const addTodo = (
   todos: TodoType[],
   todoRef: React.RefObject<HTMLInputElement>,
@@ -98,4 +90,24 @@ export const addTitleCard = (
     if (!titleExists) setTitle(titleRef.current?.value);
     else toaster('Title Exists', '', 'warning');
   }
+};
+
+export const orderCardsFunction = (value: string | string[], cards: Card[]) => {
+  if (value === 'importance') {
+    return [...cards].sort(
+      (a, b) =>
+        Number(b.category.split(' ')[1]) - Number(a.category.split(' ')[1])
+    );
+  } else if (value === 'alphabetically') {
+    return [...cards].sort((n1, n2) => {
+      if (n1.title! > n2.title!) {
+        return 1;
+      }
+
+      if (n1.title! < n2.title!) {
+        return -1;
+      }
+      return 0;
+    });
+  } else return cards;
 };
