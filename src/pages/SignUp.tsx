@@ -91,8 +91,9 @@ const SignUp = () => {
             errortext={errors?.email?.message}
             isRequired
           >
-            <FormLabel>Email address</FormLabel>
+            <FormLabel>Email Address</FormLabel>
             <Input
+              data-testid='register-email'
               border='1px solid'
               borderColor={backgroundColor}
               type='email'
@@ -110,6 +111,7 @@ const SignUp = () => {
           >
             <FormLabel>Username</FormLabel>
             <Input
+              data-testid='register-username'
               border='1px solid'
               borderColor={backgroundColor}
               type='username'
@@ -127,6 +129,7 @@ const SignUp = () => {
           >
             <FormLabel>Password</FormLabel>
             <Input
+              data-testid='register-password'
               border='1px solid'
               borderColor={backgroundColor}
               type='password'
@@ -144,6 +147,7 @@ const SignUp = () => {
           >
             <FormLabel>Confirm Password</FormLabel>
             <Input
+              data-testid='register-confirmpassword'
               border='1px solid'
               borderColor={backgroundColor}
               type='password'

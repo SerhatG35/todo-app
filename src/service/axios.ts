@@ -12,7 +12,8 @@ const PROD_API = 'https://my-todo-app-backend.herokuapp.com/';
 const LOCAL_API = 'http://localhost:4000/';
 
 const API = axios.create({
-  baseURL: process.env.NODE_ENV === 'development' ? LOCAL_API : PROD_API,
+  // baseURL: process.env.NODE_ENV === 'development' ? LOCAL_API : PROD_API,
+  baseURL: PROD_API,
 });
 
 export const Auth = {
