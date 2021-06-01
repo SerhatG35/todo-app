@@ -1,6 +1,5 @@
 import {
   act,
-  findByTestId,
   fireEvent,
   render,
   screen,
@@ -17,6 +16,7 @@ import { Provider } from 'react-redux';
 import { store } from 'src/redux/store';
 import UserContext from 'src/context/userContext';
 import { User } from 'global';
+import PrivateRoute from 'src/components/PrivateRoute';
 
 const LoginPage = () => {
   return render(
@@ -28,7 +28,7 @@ const LoginPage = () => {
   );
 };
 
-const RenderDashboard = (user: User) => {
+const RenderDashboard = (user:User) => {
   return render(
     <Provider store={store}>
       <UserContext.Provider value={{ user }}>
@@ -37,7 +37,9 @@ const RenderDashboard = (user: User) => {
             <Switch>
               <Route exact path={ROUTES.LOGIN} component={Login} />
               <Route exact path={ROUTES.SIGNUP} component={SignUp} />
-              <Home />
+              <PrivateRoute user={user} path={ROUTES.DASHBOARD} exact>
+                <Home />
+              </PrivateRoute>
             </Switch>
           </ChakraProvider>
         </MemoryRouter>
@@ -57,20 +59,20 @@ test('Renders login page correctly', async () => {
 test('User logins correctly', async () => {
   await act(async () => {
     const user = {
-      id: 'this is id',
-      token: 'this is token',
+      id: '608e6edf564ca01738e06bcb',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOGU2ZWRmNTY0Y2EwMTczOGUwNmJjYiIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJmaXJzdG5hbWUiOiIiLCJpYXQiOjE2MjIyMDA0NTV9.nzLomPDa9DTRCtqrUnUbnM4v8ahyXV9pX5rIDMpQBhg',
       userName: 'testuser',
     };
     RenderDashboard(user);
     const inputUsername = await screen.findByTestId('input-username');
     const inputPassword = await screen.findByTestId('input-password');
-    const submitButton = screen.getByText('Sign in');
-    await waitFor(() => [
-      fireEvent.change(inputUsername, { target: { value: 'testuser' } }),
-      fireEvent.change(inputPassword, { target: { value: '123123' } }),
-      fireEvent.click(submitButton),
-    ]);
-    const loggedUserName = await screen.findByTestId('loggedin-username');
-    expect(loggedUserName).toHaveTextContent(user.userName);
+    const submitButton = await screen.findByTestId('button-login');
+    fireEvent.change(inputUsername, { target: { value: 'testuser' } });
+    fireEvent.change(inputPassword, { target: { value: '123123' } });
+    fireEvent.click(submitButton);
+    await waitFor(() => {
+      expect(screen.getByText('Success')).toBeInTheDocument();
+    });
   });
 });

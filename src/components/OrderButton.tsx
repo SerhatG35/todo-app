@@ -21,12 +21,21 @@ const OrderButton = () => {
   return (
     <Menu closeOnSelect={false} isLazy>
       <MenuButton
+        sx={{
+          '@media screen and (max-width: 768px)': {
+            position: 'absolute',
+            left: '4',
+            top: '4',
+            marginTop: '0',
+          },
+        }}
         mt='2'
         as={IconButton}
         aria-label='menu button'
-        fontSize='xx-large'
+        fontSize='x-large'
         icon={<BiSortDown />}
         _focus={{ boxShadow: 'none' }}
+        size='sm'
       />
       <MenuList>
         <MenuOptionGroup

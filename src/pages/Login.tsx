@@ -61,7 +61,6 @@ const Login = () => {
         toaster('Success', `Welcome ${data.userName}`, 'success');
       }
     } catch (error) {
-      console.log(error.response);
       toaster('Success', error.response.data, 'error');
       setIsLoading(false);
     }
@@ -143,6 +142,7 @@ const Login = () => {
           <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
         </FormControl>
         <Button
+          data-testid='button-login'
           isLoading={isLoading}
           loadingText='Logging in'
           type='submit'

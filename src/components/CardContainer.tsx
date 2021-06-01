@@ -132,7 +132,7 @@ const CardContainer = () => {
                 d='flex'
                 flexDir='column'
                 boxShadow='lg'
-                w={['100%', '40%', '96']}
+                w={['100%', '43%', '96']}
                 h={['xs', 'md', 'xs']}
                 m={['3', '3', '5']}
                 rounded='3xl'
@@ -141,6 +141,7 @@ const CardContainer = () => {
                   Add New Todo Card
                 </Heading>
                 <Select
+                  data-testid='select-cardcategory'
                   ref={categoryRef}
                   color='#000'
                   bg='#3182CE'
@@ -149,6 +150,7 @@ const CardContainer = () => {
                   textAlign='center'
                   icon={<CgArrowDownO />}
                   _focus={{ boxShadow: 'none' }}
+                  name='Select Category'
                 >
                   <option defaultChecked hidden defaultValue='' value=''>
                     Select Category
@@ -158,6 +160,7 @@ const CardContainer = () => {
                   <option value='red 3 urgent'>Urgent</option>
                 </Select>
                 <IconButton
+                  data-testid='button-newcard'
                   size='xs'
                   _focus={{ boxShadow: 'none' }}
                   mt='5'

@@ -8,7 +8,6 @@ export default function useAuthListener() {
 
   const checkToken = () => {
     const login: User = JSON.parse(localStorage.getItem('login') || '{}');
-    // if there is a token navigate to dashboard not login screen
     if (login?.token) setUser(login);
     else setUser(null);
   };
