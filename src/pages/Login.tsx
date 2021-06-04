@@ -34,6 +34,7 @@ const Login = () => {
   const history = useHistory();
   useRedirectLoggedInUser();
   const backgroundColor = useColorModeValue('#505153', '#ADCAD7');
+  const loginWrapperBgColor = useColorModeValue('#F2F2F2', '#212322');
 
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
@@ -84,6 +85,7 @@ const Login = () => {
         p='1.5em 3em'
         w='100%'
         h='100%'
+        bg={loginWrapperBgColor}
       >
         <FormControl
           isInvalid={!!errors?.username?.message}

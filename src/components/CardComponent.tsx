@@ -9,6 +9,7 @@ import {
   TagRightIcon,
   Text,
   Heading,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { TiDeleteOutline } from 'react-icons/ti';
@@ -42,6 +43,7 @@ const CardComponent = ({
   const [mouseEntered, setMouseEntered] = useState(false); // for title change
   const titleRef = useRef<HTMLInputElement>(null);
   const todoRef = useRef<HTMLInputElement>(null);
+  const cardBgColor = useColorModeValue('#F2F2F2', '#212322');
 
   const cards = useAppSelector((state) => state.cardsSlice.userCards);
   const orderValue = useAppSelector((state) => state.cardsSlice.order);
@@ -75,6 +77,7 @@ const CardComponent = ({
       boxShadow='lg'
       position='relative'
       overflow='hidden'
+      bg={cardBgColor}
     >
       {title ? (
         <>

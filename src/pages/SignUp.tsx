@@ -42,6 +42,7 @@ const SignUp = () => {
   const backgroundColor = useColorModeValue('#505153', '#ADCAD7');
   const fontColor = useColorModeValue('#EBEBEB', '#ADCAD7');
   const hoverColor = useColorModeValue('#ADCAD7', '#EBEBEB');
+  const formWrapperBgColor = useColorModeValue('#F2F2F2', '#212322');
 
   const onSubmit = async (values: SignUpFormInputs) => {
     setIsLoading(true);
@@ -75,6 +76,7 @@ const SignUp = () => {
           boxShadow='xl'
           p='1.5em 2em'
           rounded='3xl'
+          bg={formWrapperBgColor}
         >
           <FormControl id='first-name'>
             <FormLabel>First Name</FormLabel>

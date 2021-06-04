@@ -30,6 +30,7 @@ const CardContainer = () => {
   const [loading, setLoading] = useState(false);
   const categoryRef = useRef<HTMLSelectElement>(null);
   const handleColor = useColorModeValue('#505153', '#EBEBEB');
+  const addNewCardBgColor = useColorModeValue('#F2F2F2', '#212322');
 
   const loggedUser = useContext(UserContext);
 
@@ -114,6 +115,7 @@ const CardContainer = () => {
                           variant='outline'
                           position='absolute'
                           color={handleColor}
+                          rounded='2xl'
                           fontSize='xl'
                           size='xs'
                           top='1'
@@ -136,6 +138,7 @@ const CardContainer = () => {
                 h={['xs', 'md', 'xs']}
                 m={['3', '3', '5']}
                 rounded='3xl'
+                bg={addNewCardBgColor}
               >
                 <Heading textAlign='center' size='md' userSelect='none'>
                   Add New Todo Card

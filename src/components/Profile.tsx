@@ -18,6 +18,7 @@ const Profile = () => {
   const history = useHistory();
   const fontColor = useColorModeValue('#EBEBEB', '#ADCAD7');
   const hoverColor = useColorModeValue('#ADCAD7', '#EBEBEB');
+  const profileBgColor = useColorModeValue('#F2F2F2', '#212322');
 
   const logout = () => {
     localStorage.removeItem('login');
@@ -32,6 +33,7 @@ const Profile = () => {
       h={['20%', '20%', '100%']}
       position='relative'
       boxShadow='lg'
+      bg={profileBgColor}
     >
       <Center
         mt={['0.5em', '0.5em', '2rem']}
