@@ -19,6 +19,21 @@ import { User } from 'global';
 import PrivateRoute from 'src/components/PrivateRoute';
 import userEvent from '@testing-library/user-event';
 
+const user = {
+  id: '608e6edf564ca01738e06bcb',
+  token:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOGU2ZWRmNTY0Y2EwMTczOGUwNmJjYiIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJmaXJzdG5hbWUiOiIiLCJpYXQiOjE2MjIyMDA0NTV9.nzLomPDa9DTRCtqrUnUbnM4v8ahyXV9pX5rIDMpQBhg',
+  userName: 'testuser',
+};
+
+type userType =
+  | {
+      id: string;
+      token: string;
+      userName: string;
+    }
+  | undefined;
+
 const RenderDashboard = (user: User) => {
   return render(
     <Provider store={store}>
@@ -39,14 +54,25 @@ const RenderDashboard = (user: User) => {
   );
 };
 
-test('Adding new card and todos', async () => {
-  const user = {
-    id: '608e6edf564ca01738e06bcb',
-    token:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOGU2ZWRmNTY0Y2EwMTczOGUwNmJjYiIsInVzZXJuYW1lIjoidGVzdHVzZXIiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJmaXJzdG5hbWUiOiIiLCJpYXQiOjE2MjIyMDA0NTV9.nzLomPDa9DTRCtqrUnUbnM4v8ahyXV9pX5rIDMpQBhg',
-    userName: 'testuser',
-  };
+let localStorageMock = (function () {
+  let store = new Map([['login', user]]);
+  return {
+    getItem(key: string): userType {
+      return store.get(key);
+    },
 
+    clear: function () {
+      store = new Map();
+    },
+
+    removeItem: function (key: string) {
+      store.delete(key);
+    },
+  };
+})();
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
+test('Adding new card', async () => {
   await act(async () => {
     RenderDashboard(user);
   });
@@ -58,6 +84,9 @@ test('Adding new card and todos', async () => {
   fireEvent.change(inputPassword, { target: { value: '123123' } });
   fireEvent.click(submitButton);
 
+  await waitFor(() => {
+    expect(screen.getByText('testuser')).toBeInTheDocument();
+  });
   await waitFor(() => {
     expect(screen.getByText('Success')).toBeInTheDocument();
   });
@@ -80,14 +109,31 @@ test('Adding new card and todos', async () => {
     fireEvent.click(addTitle);
     expect(screen.getByText('this is test title')).toBeInTheDocument();
   });
+});
 
-  // const addTodo = await screen.findByTestId('button-addtodo');
-  // const inputTodo = await screen.findByTestId('input-addtodo');
+// test('Todo successfully added', async () => {
+//   await act(async () => {
+//     RenderDashboard(user);
+//   });
 
-  // await waitFor(() => {
-  //   fireEvent.change(inputTodo, { target: { value: 'my todo' } });
-  //   expect(inputTodo).toHaveValue('my todo');
-  //   fireEvent.click(addTodo);
-  //   expect(screen.getByText('my todo')).toBeInTheDocument();
-  // });
+//   const addTodo = await screen.findByTestId('button-addtodo');
+//   const inputTodo = await screen.findByTestId('input-addtodo');
+
+//   await waitFor(() => {
+//     fireEvent.change(inputTodo, { target: { value: 'my todo' } });
+//     expect(inputTodo).toHaveValue('my todo');
+//     fireEvent.click(addTodo);
+//     expect(screen.getByText('my todo')).toBeInTheDocument();
+//   });
+// });
+
+test('Logged out successfully', async () => {
+  await act(async () => {
+    RenderDashboard(user);
+  });
+  const logoutButton = screen.getByText('Logout');
+  await waitFor(() => {
+    fireEvent.click(logoutButton);
+    expect(screen.getByText('Login')).toBeInTheDocument();
+  });
 });

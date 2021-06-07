@@ -71,6 +71,7 @@ const Profile = () => {
         color={fontColor}
         _hover={{ color: hoverColor }}
         onClick={logout}
+        data-testid='button-logout'
       >
         Logout
       </Button>
