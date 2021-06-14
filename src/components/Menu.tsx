@@ -29,6 +29,7 @@ const Menu = () => {
             display: 'none',
           },
         }}
+        bg='transparent'
         position='absolute'
         top='4'
         right='4'

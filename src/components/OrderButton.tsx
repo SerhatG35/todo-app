@@ -36,8 +36,9 @@ const OrderButton = () => {
         icon={<BiSortDown />}
         _focus={{ boxShadow: 'none' }}
         size='sm'
+        bg='transparent'
       />
-      <MenuList>
+      <MenuList zIndex='2000'>
         <MenuOptionGroup
           onChange={(value) => {
             dispatch(orderCards({ value, cards }));

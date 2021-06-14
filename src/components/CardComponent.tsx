@@ -41,9 +41,10 @@ const CardComponent = ({
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [todos, setTodos] = useState<TodoType[]>([]);
   const [mouseEntered, setMouseEntered] = useState(false); // for title change
+  const cardBgColor = useColorModeValue('#F2F2F2', '#212322');
+
   const titleRef = useRef<HTMLInputElement>(null);
   const todoRef = useRef<HTMLInputElement>(null);
-  const cardBgColor = useColorModeValue('#F2F2F2', '#212322');
 
   const cards = useAppSelector((state) => state.cardsSlice.userCards);
   const orderValue = useAppSelector((state) => state.cardsSlice.order);
@@ -93,6 +94,7 @@ const CardComponent = ({
             pr='6'
           >
             <Heading
+              letterSpacing='wide'
               fontSize={['md', 'lg', '2xl']}
               p='0'
               overflowWrap='anywhere'
@@ -122,8 +124,9 @@ const CardComponent = ({
                         onChange={(e) => completeTodo(e, todo, todos, setTodos)}
                       />
                       <Text
-                        overflowWrap='anywhere'
-                        fontSize={['sm']}
+                        letterSpacing='wide'
+                        wordBreak='break-word'
+                        fontSize={['xs', 'xs', 'sm']}
                         textDecoration={
                           todo.isCompleted ? 'line-through' : 'none'
                         }
@@ -134,6 +137,7 @@ const CardComponent = ({
                     </Flex>
                     <Flex>
                       <EditTodo
+                        active={todo.isCompleted}
                         todo={todo.todo}
                         todos={todos}
                         index={index}

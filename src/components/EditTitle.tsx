@@ -61,7 +61,11 @@ const EditTitle = ({ currentTitle }: EditTitleTypes) => {
             icon={<AiFillEdit />}
           />
         </PopoverTrigger>
-        <PopoverContent p={5}>
+        <PopoverContent
+          p={5}
+          _focus={{ boxShadow: 'none' }}
+          w={['275px', '200px', '250px', '300px', '300px']}
+        >
           <PopoverArrow />
           <PopoverCloseButton />
           <Text textAlign='center'>Change Title</Text>

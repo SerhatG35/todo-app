@@ -67,7 +67,7 @@ const CardContainer = () => {
   return (
     <Center
       py='7'
-      px='3'
+      px={['3', '0', '3']}
       w={['100%', '100%', '85%']}
       h='100%'
       d='flex'
@@ -95,7 +95,7 @@ const CardContainer = () => {
                         endColor='#EBEBEB'
                         rounded='3xl'
                         isLoaded={!loading}
-                        w={['100%', '43%', '96']}
+                        w={['100%', '44%', '400px']}
                         m={['3', '3', '5']}
                         h={['xs', 'md', 'xs']}
                         {...provided.draggableProps}
@@ -134,7 +134,7 @@ const CardContainer = () => {
                 d='flex'
                 flexDir='column'
                 boxShadow='lg'
-                w={['100%', '43%', '96']}
+                w={['100%', '44%', '400px']}
                 h={['xs', 'md', 'xs']}
                 m={['3', '3', '5']}
                 rounded='3xl'

@@ -22,9 +22,10 @@ type EditTodoTypes = {
   todos: TodoType[];
   index: number;
   setTodos: React.Dispatch<React.SetStateAction<TodoType[]>>;
+  active: boolean;
 };
 
-const EditTodo = ({ todo, todos, index, setTodos }: EditTodoTypes) => {
+const EditTodo = ({ todo, todos, index, setTodos, active }: EditTodoTypes) => {
   const newTodoRef = useRef<HTMLInputElement>(null);
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -46,6 +47,7 @@ const EditTodo = ({ todo, todos, index, setTodos }: EditTodoTypes) => {
       >
         <PopoverTrigger>
           <IconButton
+            isDisabled={active}
             ml='2'
             _focus={{ boxShadow: 'none' }}
             _hover={{
@@ -59,12 +61,16 @@ const EditTodo = ({ todo, todos, index, setTodos }: EditTodoTypes) => {
             aria-label='edit todo'
           />
         </PopoverTrigger>
-        <PopoverContent p={5}>
+        <PopoverContent
+          p={5}
+          _focus={{ boxShadow: 'none' }}
+          w={['275px', '200px', '250px', '300px', '300px']}
+        >
           <PopoverArrow />
           <PopoverCloseButton />
           <Text textAlign='center'>Change Todo</Text>
-          <Input ref={newTodoRef} defaultValue={todo} />
-          <ButtonGroup mt='3' d='flex' justifyContent='flex-end'>
+          <Input my='3' ref={newTodoRef} defaultValue={todo} />
+          <ButtonGroup d='flex' justifyContent='flex-end'>
             <Button variant='outline' onClick={onClose}>
               Cancel
             </Button>

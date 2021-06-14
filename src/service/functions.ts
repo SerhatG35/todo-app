@@ -100,11 +100,11 @@ export const orderCardsFunction = (value: string | string[], cards: Card[]) => {
     );
   } else if (value === 'alphabetically') {
     return [...cards].sort((n1, n2) => {
-      if (n1.title! > n2.title!) {
+      if (n1.title?.toLowerCase()! > n2.title?.toLowerCase()!) {
         return 1;
       }
 
-      if (n1.title! < n2.title!) {
+      if (n1.title?.toLowerCase()! < n2.title?.toLowerCase()!) {
         return -1;
       }
       return 0;
