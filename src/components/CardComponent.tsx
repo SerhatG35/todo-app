@@ -77,7 +77,6 @@ const CardComponent = ({
       flexWrap='wrap'
       boxShadow='lg'
       position='relative'
-      overflow='hidden'
       bg={cardBgColor}
     >
       {title ? (
@@ -179,6 +178,7 @@ const CardComponent = ({
             position='absolute'
             w='full'
             pl='5'
+            roundedBottom='full'
             rounded='none'
             left='0'
             bottom='0'
